@@ -32,6 +32,19 @@ private:
     QAction *addToLocalMusic;
     QAction *addToMyFavourite;
     QAction *addToPlaylist;
+    QAction *setBackGround;
+    QAction *setBackGround_1;
+    QAction *setBackGround_2;
+    QAction *setBackground_customize;
+    QAction *showAbout;
+    QAction *clearList;
+    QAction *clearAllList;
+    QAction *clearLocalMusic;
+    QAction *clearMyFavourite;
+    QAction *clearPlaylist;
+    QAction *preSong;
+    QAction *nextSong;
+    QAction *playOrPause;
 };
 
 #endif // MAINWINDOW_H
