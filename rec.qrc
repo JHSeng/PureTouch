@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/icon">
         <file>resources/icon/close.png</file>
         <file>resources/icon/minimize.png</file>
         <file>resources/icon/settings.png</file>
@@ -7,5 +7,23 @@
         <file>resources/icon/addToLocalMusic.png</file>
         <file>resources/icon/myFavourite.png</file>
         <file>resources/icon/playList.png</file>
+        <file>resources/icon/skin.png</file>
+        <file>resources/icon/background_1.png</file>
+        <file>resources/icon/background_2.png</file>
+        <file>resources/icon/customize.png</file>
+        <file>resources/icon/about.png</file>
+        <file>resources/icon/clearList.png</file>
+        <file>resources/icon/allList.png</file>
+        <file>resources/icon/nextSong.png</file>
+        <file>resources/icon/play.png</file>
+        <file>resources/icon/preSong.png</file>
+        <file>resources/icon/inOrder.png</file>
+        <file>resources/icon/playType.png</file>
+        <file>resources/icon/shuffle.png</file>
+        <file>resources/icon/singleCycle.png</file>
+    </qresource>
+    <qresource prefix="/background">
+        <file>resources/background/background_1.png</file>
+        <file>resources/background/background_2.jpg</file>
     </qresource>
 </RCC>

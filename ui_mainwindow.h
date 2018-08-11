@@ -23,6 +23,7 @@ public:
     QPushButton *btnClose;
     QPushButton *btnSettings;
     QPushButton *btnMiniStyle;
+    QPushButton *btnSetBackGround;
 
     void setupUi(QWidget *MainWindow)
     {
@@ -34,7 +35,7 @@ public:
         btnMinimize->setGeometry(QRect(860, 10, 32, 32));
         btnMinimize->setStyleSheet(QLatin1String("QPushButton\n"
 "{\n"
-"	background-image: url(:/resources/icon/minimize.png);\n"
+"	background-image: url(:/icon/resources/icon/minimize.png);\n"
 "	background-color: rgba(255, 255, 255,0);\n"
 "	border-style:outset;\n"
 "	border-color:rgba(255,255,255,0);\n"
@@ -59,7 +60,7 @@ public:
         btnClose->setGeometry(QRect(910, 10, 32, 32));
         btnClose->setStyleSheet(QLatin1String("QPushButton\n"
 "{\n"
-"	background-image: url(:/resources/icon/close.png);\n"
+"	background-image: url(:/icon/resources/icon/close.png);\n"
 "	background-color: rgba(255, 255, 255,0);\n"
 "	border-style:outset;\n"
 "	border-color:rgba(255,255,255,0);\n"
@@ -84,7 +85,7 @@ public:
         btnSettings->setGeometry(QRect(810, 10, 32, 32));
         btnSettings->setStyleSheet(QLatin1String("QPushButton\n"
 "{\n"
-"	background-image: url(:/resources/icon/settings.png);\n"
+"	background-image: url(:/icon/resources/icon/settings.png);\n"
 "	background-color: rgba(255, 255, 255,0);\n"
 "	border-style:outset;\n"
 "	border-color:rgba(255,255,255,0);\n"
@@ -109,7 +110,32 @@ public:
         btnMiniStyle->setGeometry(QRect(760, 10, 32, 32));
         btnMiniStyle->setStyleSheet(QLatin1String("QPushButton\n"
 "{\n"
-"	background-image: url(:/resources/icon/miniStyle.png);\n"
+"	background-image: url(:/icon/resources/icon/miniStyle.png);\n"
+"	background-color: rgba(255, 255, 255,0);\n"
+"	border-style:outset;\n"
+"	border-color:rgba(255,255,255,0);\n"
+"	border-radius:4px;\n"
+"}\n"
+"\n"
+"QPushButton:hover\n"
+"{\n"
+"	background-color: rgba(255, 255, 255,100);\n"
+"}\n"
+"\n"
+"QPushButton:pressed\n"
+"{\n"
+"	background-color: rgba(95, 95, 95,100);\n"
+"	border-color:rgba(255,255,255,30);\n"
+"	border-style:inset;\n"
+"	color:rgba(0,0,0,100);\n"
+"}\n"
+""));
+        btnSetBackGround = new QPushButton(MainWindow);
+        btnSetBackGround->setObjectName(QStringLiteral("btnSetBackGround"));
+        btnSetBackGround->setGeometry(QRect(710, 10, 32, 32));
+        btnSetBackGround->setStyleSheet(QLatin1String("QPushButton\n"
+"{\n"
+"	background-image: url(:/icon/resources/icon/skin.png);\n"
 "	background-color: rgba(255, 255, 255,0);\n"
 "	border-style:outset;\n"
 "	border-color:rgba(255,255,255,0);\n"
@@ -142,6 +168,7 @@ public:
         btnClose->setText(QString());
         btnSettings->setText(QString());
         btnMiniStyle->setText(QString());
+        btnSetBackGround->setText(QString());
     } // retranslateUi
 
 };
