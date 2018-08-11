@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/icon/close.png</file>
+        <file>resources/icon/minimize.png</file>
+        <file>resources/icon/settings.png</file>
+        <file>resources/icon/miniStyle.png</file>
+        <file>resources/icon/addToLocalMusic.png</file>
+        <file>resources/icon/myFavourite.png</file>
+        <file>resources/icon/playList.png</file>
+    </qresource>
+</RCC>

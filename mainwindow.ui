@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QWidget" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>955</width>
+    <height>595</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>PureTouch</string>
+  </property>
+  <widget class="QPushButton" name="btnMinimize">
+   <property name="geometry">
+    <rect>
+     <x>860</x>
+     <y>10</y>
+     <width>32</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton
+{
+	background-image: url(:/resources/icon/minimize.png);
+	background-color: rgba(255, 255, 255,0);
+	border-style:outset;
+	border-color:rgba(255,255,255,0);
+	border-radius:4px;
+}
+
+QPushButton:hover
+{
+	background-color: rgba(255, 255, 255,100);
+}
+
+QPushButton:pressed
+{
+	background-color: rgba(95, 95, 95,100);
+	border-color:rgba(255,255,255,30);
+	border-style:inset;
+	color:rgba(0,0,0,100);
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnClose">
+   <property name="geometry">
+    <rect>
+     <x>910</x>
+     <y>10</y>
+     <width>32</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton
+{
+	background-image: url(:/resources/icon/close.png);
+	background-color: rgba(255, 255, 255,0);
+	border-style:outset;
+	border-color:rgba(255,255,255,0);
+	border-radius:4px;
+}
+
+QPushButton:hover
+{
+	background-color: rgba(255, 255, 255,100);
+}
+
+QPushButton:pressed
+{
+	background-color: rgba(95, 95, 95,100);
+	border-color:rgba(255,255,255,30);
+	border-style:inset;
+	color:rgba(0,0,0,100);
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnSettings">
+   <property name="geometry">
+    <rect>
+     <x>810</x>
+     <y>10</y>
+     <width>32</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton
+{
+	background-image: url(:/resources/icon/settings.png);
+	background-color: rgba(255, 255, 255,0);
+	border-style:outset;
+	border-color:rgba(255,255,255,0);
+	border-radius:4px;
+}
+
+QPushButton:hover
+{
+	background-color: rgba(255, 255, 255,100);
+}
+
+QPushButton:pressed
+{
+	background-color: rgba(95, 95, 95,100);
+	border-color:rgba(255,255,255,30);
+	border-style:inset;
+	color:rgba(0,0,0,100);
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnMiniStyle">
+   <property name="geometry">
+    <rect>
+     <x>760</x>
+     <y>10</y>
+     <width>32</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton
+{
+	background-image: url(:/resources/icon/miniStyle.png);
+	background-color: rgba(255, 255, 255,0);
+	border-style:outset;
+	border-color:rgba(255,255,255,0);
+	border-radius:4px;
+}
+
+QPushButton:hover
+{
+	background-color: rgba(255, 255, 255,100);
+}
+
+QPushButton:pressed
+{
+	background-color: rgba(95, 95, 95,100);
+	border-color:rgba(255,255,255,30);
+	border-style:inset;
+	color:rgba(0,0,0,100);
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
