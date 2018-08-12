@@ -25,6 +25,7 @@ class MainWindow : public QWidget
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void updatePlayState();
 
 private:
     Ui::MainWindow *ui;
@@ -45,6 +46,24 @@ private:
     QAction *preSong;
     QAction *nextSong;
     QAction *playOrPause;
+    QAction *selectPlayMode;
+    QAction *playInOrder;
+    QAction *playSingleCycle;
+    QAction *playShuffle;
+    QAction *songInfo;
+    QPixmap *wallpaper;
+    double transparency;
+    QPalette palette;
+
+    QMediaPlayer *mediaPlayer;
+    QMediaPlaylist *playList_1;
+    QMediaPlaylist *playList_2;
+    QMediaPlaylist *playList_3;
+
+    QSqlTableModel *model_1;
+    QSqlTableModel *model_2;
+    QSqlTableModel *model_3;
+
 };
 
 #endif // MAINWINDOW_H

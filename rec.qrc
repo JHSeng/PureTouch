@@ -18,9 +18,22 @@
         <file>resources/icon/play.png</file>
         <file>resources/icon/preSong.png</file>
         <file>resources/icon/inOrder.png</file>
-        <file>resources/icon/playType.png</file>
+        <file>resources/icon/playMode.png</file>
         <file>resources/icon/shuffle.png</file>
         <file>resources/icon/singleCycle.png</file>
+        <file>resources/icon/songInfo.png</file>
+        <file>resources/icon/playNextSong.png</file>
+        <file>resources/icon/playPreSong.png</file>
+        <file>resources/icon/mediaPause.png</file>
+        <file>resources/icon/mediaPlay.png</file>
+        <file>resources/icon/hidePlayList.png</file>
+        <file>resources/icon/showPlayList.png</file>
+        <file>resources/icon/volume.png</file>
+        <file>resources/icon/greyDot.png</file>
+        <file>resources/icon/addSong.png</file>
+        <file>resources/icon/search.png</file>
+        <file>resources/icon/yellowDot.png</file>
+        <file>resources/icon/localMusic.png</file>
     </qresource>
     <qresource prefix="/background">
         <file>resources/background/background_1.png</file>
