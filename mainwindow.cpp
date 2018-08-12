@@ -16,6 +16,7 @@
 #include <QSqlQuery>
 #include <QSqlQueryModel>
 #include <QSqlTableModel>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
@@ -37,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
     addToMyFavourite->setText(tr("添加到我喜欢"));
     addToPlaylist->setIcon(QIcon(":/resources/icon/playList.png"));
     addToPlaylist->setText(tr("添加到播放列表"));
-
     QMenu *menu1=new QMenu(this);
     menu1->addAction(addToLocalMusic);
     menu1->addAction(addToMyFavourite);
@@ -145,12 +145,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //播放器相关设置
     mediaPlayer=new QMediaPlayer(this);
-    playList_1=new QMediaPlaylist(this);
-    playList_1->setPlaybackMode(QMediaPlaylist::Loop);
-    playList_2=new QMediaPlaylist(this);
-    playList_2->setPlaybackMode(QMediaPlaylist::Loop);
-    playList_3=new QMediaPlaylist(this);
-    playList_3->setPlaybackMode(QMediaPlaylist::Loop);  //end
+    playList_LocalMusic=new QMediaPlaylist(this);
+    playList_LocalMusic->setPlaybackMode(QMediaPlaylist::Loop);
+    playList_MyFavourite=new QMediaPlaylist(this);
+    playList_MyFavourite->setPlaybackMode(QMediaPlaylist::Loop);
+    playList_PlayList=new QMediaPlaylist(this);
+    playList_PlayList->setPlaybackMode(QMediaPlaylist::Loop);  //end
 
     //UI按钮设置
     ui->btnPlayOrPause->setIconSize(QSize(48,48));
@@ -180,7 +180,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->volumeSlider->hide();
     ui->volumeSlider->setValue(100);
     ui->songSlider->setValue(0);
-    ui->playList->currentIndex(0);
+    ui->playList->setCurrentIndex(0);
     ui->btnLocalMusic->setStyleSheet(
         "QPushButton"
         "{"
@@ -223,14 +223,22 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+static QString Time(qint64 time)
+{
+    qint64 seconds=time/100;
+    const qint64 minutes=seconds/60;
+    seconds-=minutes*60;
+    return QStringLiteral("%1:%2").arg(minutes,2,10,QLatin1Char('0')).arg(seconds,2,10,QLatin1Char('0'));
+}
+
 void MainWindow::updatePlayState()  //更新当前播放歌曲信息
 {
-    QString playState=tr("正在播放:  ");
+    QString playState=tr("正在播放: ");
     if (mediaPlayer->isMetaDataAvailable())
     {
         QString musicTitle=mediaPlayer->metaData(QStringLiteral("Title")).toString();
         if (!musicTitle.isEmpty())
-            playState+=title;
+            playState+=musicTitle;
         else
             playState+=tr("未知歌曲");
         playState+="-";
@@ -241,5 +249,580 @@ void MainWindow::updatePlayState()  //更新当前播放歌曲信息
             playState+=tr("未知作者");
     }
     ui->labPlayState->setText(playState);
+    if (mediaPlayer->playlist()==playList_MyFavourite)
+    {
+        ui->btnAddToCurrentList->setIcon(QIcon(":/icon/resources/icon/liked.png"));
+        ui->btnAddToCurrentList->setToolTip(tr("已经喜欢"));
+    }
+    else if (mediaPlayer->playlist()==playList_PlayList)
+    {
+        ui->btnAddToCurrentList->setIcon(QIcon(":/icon/resources/icon/addedToPlayList.png"));
+        ui->btnAddToCurrentList->setToolTip(tr("已在播放列表"));
+    }
+    else
+    {
+        QSqlQuery query;
+        query.exec("select * from HAHAHA");
+        model_1->setTable("HAHAHA");
+        model_1->select();
+        int row=playList_LocalMusic->currentIndex();
+        int flag=model_1->data(model_1->index(row,3)).toInt();
+        if (flag)
+        {
+            ui->btnAddToCurrentList->setIcon(QIcon(":/icon/resources/icon/liked.png"));
+            ui->btnAddToCurrentList->setToolTip(tr("已经喜欢"));
+        }
+        else
+        {
+            ui->btnAddToCurrentList->setIcon(QIcon(":/icon/resources/icon/addToMyFavourite.png"));
+            ui->btnAddToCurrentList->setToolTip(tr("添加到我喜欢"));
+        }
+    }
+}
 
+void MainWindow::updatePlayPosition(qint64 position) //更新播放位置
+{
+    ui->songSlider->setValue(position);
+    ui->labTime->setText(Time(position)+"/"+Time(mediaPlayer->duration()));
+}
+
+void MainWindow::updatePlayDuration(qint64 duration) //更新播放进度
+{
+    ui->songSlider->setRange(0,duration);
+    ui->songSlider->setEnabled(duration>0);
+    ui->songSlider->setPageStep(duration/10);
+}
+
+void MainWindow::setBtnLocalMusicLightUp() //使本地歌曲按钮变亮
+{
+    ui->btnLocalMusic->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(:/icon/resources/icon/localMusic.png);"
+            "background-color: rgba(255, 255, 255,100);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+            "background-color: rgba(95, 95, 95,100);"
+            "border-color:rgba(255,255,255,30);"
+            "border-style:inset;"
+            "color:rgba(0,0,0,100);"
+        "}");
+    ui->btnMyFavourite->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(::/icon/resources/icon/myFavouriteList.png);"
+            "background-color: rgba(255, 255, 255,0);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+            "background-color: rgba(95, 95, 95,100);"
+            "border-color:rgba(255,255,255,30);"
+            "border-style:inset;"
+            "color:rgba(0,0,0,100);"
+        "}");
+    ui->btnPlayList->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(:/icon/resources/icon/playList.png);"
+            "background-color: rgba(255, 255, 255,0);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+        "background-color: rgba(95, 95, 95,100);"
+        "border-color:rgba(255,255,255,30);"
+        "border-style:inset;"
+        "color:rgba(0,0,0,100);"
+        "}");
+}
+
+void MainWindow::setBtnMyFavouriteLightUp() //使我喜欢按钮变亮
+{
+    ui->btnLocalMusic->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(:/icon/resources/icon/localMusic.png);"
+            "background-color: rgba(255, 255, 255,0);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+            "background-color: rgba(95, 95, 95,100);"
+            "border-color:rgba(255,255,255,30);"
+            "border-style:inset;"
+            "color:rgba(0,0,0,100);"
+        "}");
+    ui->btnMyFavourite->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(::/icon/resources/icon/myFavouriteList.png);"
+            "background-color: rgba(255, 255, 255,100);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+            "background-color: rgba(95, 95, 95,100);"
+            "border-color:rgba(255,255,255,30);"
+            "border-style:inset;"
+            "color:rgba(0,0,0,100);"
+        "}");
+    ui->btnPlayList->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(:/icon/resources/icon/playList.png);"
+            "background-color: rgba(255, 255, 255,0);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+        "background-color: rgba(95, 95, 95,100);"
+        "border-color:rgba(255,255,255,30);"
+        "border-style:inset;"
+        "color:rgba(0,0,0,100);"
+        "}");
+}
+
+void MainWindow::setBtnPlaylistLightUp() //使播放列表按钮变亮
+{
+    ui->btnLocalMusic->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(:/icon/resources/icon/localMusic.png);"
+            "background-color: rgba(255, 255, 255,0);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+            "background-color: rgba(95, 95, 95,100);"
+            "border-color:rgba(255,255,255,30);"
+            "border-style:inset;"
+            "color:rgba(0,0,0,100);"
+        "}");
+    ui->btnMyFavourite->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(::/icon/resources/icon/myFavouriteList.png);"
+            "background-color: rgba(255, 255, 255,0);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+            "background-color: rgba(95, 95, 95,100);"
+            "border-color:rgba(255,255,255,30);"
+            "border-style:inset;"
+            "color:rgba(0,0,0,100);"
+        "}");
+    ui->btnPlayList->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(:/icon/resources/icon/playList.png);"
+            "background-color: rgba(255, 255, 255,100);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+        "background-color: rgba(95, 95, 95,100);"
+        "border-color:rgba(255,255,255,30);"
+        "border-style:inset;"
+        "color:rgba(0,0,0,100);"
+        "}");
+}
+
+void MainWindow::setNoBtnLightUp() //使三个按钮变暗
+{
+    ui->btnLocalMusic->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(:/icon/resources/icon/localMusic.png);"
+            "background-color: rgba(255, 255, 255,0);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+            "background-color: rgba(95, 95, 95,100);"
+            "border-color:rgba(255,255,255,30);"
+            "border-style:inset;"
+            "color:rgba(0,0,0,100);"
+        "}");
+    ui->btnMyFavourite->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(::/icon/resources/icon/myFavouriteList.png);"
+            "background-color: rgba(255, 255, 255,0);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+            "background-color: rgba(95, 95, 95,100);"
+            "border-color:rgba(255,255,255,30);"
+            "border-style:inset;"
+            "color:rgba(0,0,0,100);"
+        "}");
+    ui->btnPlayList->setStyleSheet(
+        "QPushButton"
+        "{"
+            "background-image: url(:/icon/resources/icon/playList.png);"
+            "background-color: rgba(255, 255, 255,0);"
+            "border-style:outset;"
+            "border-color:rgba(255,255,255,0);"
+            "border-radius:4px;"
+        "}"
+        "QPushButton:hover"
+        "{"
+            "background-color: rgb(255, 255, 255,100);"
+        "}"
+        "QPushButton:pressed"
+        "{"
+        "background-color: rgba(95, 95, 95,100);"
+        "border-color:rgba(255,255,255,30);"
+        "border-style:inset;"
+        "color:rgba(0,0,0,100);"
+        "}");
+}
+
+void MainWindow::on_btnLocalMusic_clicked()
+{
+    ui->playList->setCurrentIndex(0);
+    setBtnLocalMusicLightUp();
+}
+
+void MainWindow::on_btnMyFavourite_clicked()
+{
+    ui->playList->setCurrentIndex(1);
+    setBtnMyFavouriteLightUp();
+}
+
+void MainWindow::on_btnPlayList_clicked()
+{
+    ui->playList->setCurrentIndex(2);
+    setBtnPlaylistLightUp();
+}
+
+void MainWindow::songInfo_slot()
+{
+    int row;
+    QString strPlayState=ui->labPlayState->text();
+    QString author=strPlayState.split("-").last();
+    QString musicName=strPlayState.remove("-"+author).split(": ").last();
+    QString time=ui->labTime->text().split("/").last();
+    if (mediaPlayer->playlist()==playList_LocalMusic)
+    {
+        row=playList_LocalMusic->currentIndex();
+
+        model_1->setTable("HAHAHA");
+        model_1->select();
+        QString filePath=model_1->data(model_1->index(row,2)).toString();
+        QMessageBox::about(this,tr("歌曲信息"),tr("歌曲名: %1  \n"
+                                                 "作者: %2  \n"
+                                                 "时间: %3  \n"
+                                                 "文件路径: %4\n").arg(musicName).arg(author).arg(time).arg(filePath));
+    }
+    else if (mediaPlayer->playlist()==playList_MyFavourite)
+    {
+        row=playList_MyFavourite->currentIndex();
+        model_2->setTable("I_LIKE_DATA");
+        model_2->select();
+        QString filePath=model_2->data(model_2->index(row,2)).toString();
+        QMessageBox::about(this,tr("歌曲信息"),tr("歌曲名: %1  \n"
+                                                 "作者: %2  \n"
+                                                 "时间: %3  \n"
+                                                 "文件路径: %4\n").arg(musicName).arg(author).arg(time).arg(filePath));
+    }
+    else
+    {
+        row=playList_PlayList->currentIndex();
+        model_3->setTable("NIMA");
+        model_3->select();
+        QString filePath=model_3->data(model_3->index(row,2)).toString();
+        QMessageBox::about(this,tr("歌曲信息"),tr("歌曲名: %1  \n"
+                                                 "作者: %2  \n"
+                                                 "时间: %3  \n"
+                                                 "文件路径: %4\n").arg(musicName).arg(author).arg(time).arg(filePath));
+    }
+}
+
+void MainWindow::clearLocalMusic_slot()
+{
+    int value=QMessageBox::information(this,tr("清除本地音乐列表"),tr("确定清除本地音乐列表?                              ."),QMessageBox::Yes|QMessageBox::No,QMessageBox::No);
+    if (value==QMessageBox::Yes)
+    {
+        QSqlQuery query;
+        query.exec("select * from HAHAHA");
+        query.exec("delect from HAHAHA");
+        ui->localMusicList->clear();
+        playList_LocalMusic->clear();
+    }
+}
+
+void MainWindow::clearMyFavourite_slot() //这个函数的数据库操作不是很懂
+{
+    int value=QMessageBox::information(this,tr("清除我喜欢列表"),tr("确定清除我喜欢列表?                              ."),QMessageBox::Yes|QMessageBox::No,QMessageBox::No);
+    if (value==QMessageBox::Yes)
+    {
+        QSqlQuery query;
+        query.exec("select * from I_LIKE_DATA");
+        query.exec("delete from I_LIKE_DATA");
+        query.exec("select * from HAHAHA");
+        query.prepare(QString("update HAHAHA set biaoji = ? where biaoji = 1"));
+        query.bindValue(0,0);
+        query.exec();
+        ui->myFavouriteList->clear();
+        playList_MyFavourite->clear();
+    }
+}
+
+void MainWindow::clearPlaylist_slot()
+{
+    int value=QMessageBox::information(this,tr("清除播放列表"),tr("确定清除播放列表?                              ."),QMessageBox::Yes|QMessageBox::No,QMessageBox::No);
+    if (value==QMessageBox::Yes)
+    {
+        QSqlQuery query;
+        query.exec("select * from NIMA");
+        query.exec("delete from NIMA");
+        ui->playlistList->clear();
+        playList_PlayList->clear();
+    }
+}
+
+void MainWindow::clearAllList_slot()
+{
+    int value=QMessageBox::information(this,tr("清除所有列表"),tr("确定清除所有列表?                              ."),QMessageBox::Yes|QMessageBox::No);
+    if (value==QMessageBox::Yes)
+    {
+        QSqlQuery query;
+        query.exec("delete from HAHAHA");
+        query.exec("delete from I_LIKE_DATA");
+        query.exec("delete from NIMA");
+        ui->localMusicList->clear();
+        ui->myFavouriteList->clear();
+        ui->playlistList->clear();
+        playList_LocalMusic->clear();
+        playList_MyFavourite->clear();
+        playList_PlayList->clear();
+    }
+}
+
+void MainWindow::addToLocalMusic_slot()
+{
+    ui->playList->setCurrentIndex(0);
+    setBtnLocalMusicLightUp();
+    QSqlQuery query;
+    query.exec("select * from HAHAHA");
+    QStringList list=QFileDialog::getOpenFileNames(this,tr("文件"),"D:/",tr("音频文件(*.mp3)"));
+    if (!list.isEmpty())
+    {
+        QProgressDialog *progressDialog=new QProgressDialog(this);
+        progressDialog->setWindowModality(Qt::WindowModal);
+        progressDialog->setMinimumDuration(100);
+        progressDialog->resize(500,200);
+        progressDialog->setWindowTitle(tr("添加歌曲"));
+        progressDialog->setLabelText(tr("添加中                              ."));
+        progressDialog->setCancelButtonText(tr("关闭"));
+        progressDialog->setRange(0,list.size()-1);
+        for (int i=0;i<list.size();i++)
+        {
+            QListWidgetItem *item=new QListWidgetItem;
+            item->setIcon(QIcon(":/icon/resources/icon/addedToPlayList.png"));
+            QString path=QDir::toNativeSeparators(list.at(i));
+            progressDialog->setValue(i);
+            if (i==list.size()-1)
+                progressDialog->close();
+            if (progressDialog->wasCanceled())
+                progressDialog->close();
+            if (!path.isEmpty())
+            {
+                playList_LocalMusic->addMedia(QUrl::fromLocalFile(path));
+                QString name=path.split("\\").last();
+                name.remove(QString(".mp3"));
+                item->setText(QString("%1").arg(name));
+                ui->localMusicList->addItem(item);
+                query.exec(QString("insert into HAHAHA values (%1,'%2','%3',%4)").arg(qrand()%10000).arg(name).arg(path).arg(0));
+            }
+        }
+    }
+}
+
+void MainWindow::addToMyFavourite_slot()
+{
+    ui->playList->setCurrentIndex(1);
+    setBtnMyFavouriteLightUp();
+    QSqlQuery query;
+    query.exec("select *from I_LIKE_DATA");
+    QStringList list=QFileDialog::getOpenFileNames(this,tr("所有文件"),"D:/",tr("音频文件(*.mp3)"));
+    if (!list.isEmpty())
+    {
+        QProgressDialog *progressDialog=new QProgressDialog(this);
+        progressDialog->setWindowModality(Qt::WindowModal);
+        progressDialog->resize(500,200);
+        progressDialog->setMinimumDuration(100);
+        progressDialog->setWindowTitle(tr("添加歌曲"));
+        progressDialog->setLabelText(tr("添加中                              ."));
+        progressDialog->setCancelButtonText(tr("关闭"));
+        progressDialog->setRange(0,list.size()-1);
+        for (int i=0;i<list.size();i++)
+        {
+            QListWidgetItem *item=new QListWidgetItem;
+            item->setIcon(QIcon(":/icon/resources/icon/myFavouriteList.png"));
+            QString path=QDir::toNativeSeparators(list.at(i));
+            progressDialog->setValue(i);
+            if (i==list.size()-1)
+                progressDialog->close();
+            if (progressDialog->wasCanceled())
+                progressDialog->close();
+            if (!path.isEmpty())
+            {
+                playList_MyFavourite->addMedia(QUrl::fromLocalFile(path));
+                QString name=path.split("\\").last();
+                name.remove(QString(".mp3"));
+                item->setText(QString("%1").arg(name));
+                ui->myFavouriteList->addItem(item);
+                query.exec(QString("insert into I_LIKE_DATA values (%1,'%2','%3')").arg(qrand()%10000).arg(name).arg(path));
+            }
+        }
+    }
+}
+
+void MainWindow::addToPlaylist_slot()
+{
+    ui->playList->setCurrentIndex(2);
+    setBtnPlaylistLightUp();
+    QSqlQuery query;
+    query.exec("select *from NIMA");
+    QStringList list=QFileDialog::getOpenFileNames(this,tr("所有文件"),"D:/",tr("音频文件(*.mp3)"));
+    if(!list.isEmpty())
+    {
+        QProgressDialog *progressDialog=new QProgressDialog(this);
+        progressDialog->setWindowModality(Qt::WindowModal);
+        progressDialog->setMinimumDuration(100);
+        progressDialog->resize(500,200);
+        progressDialog->setWindowTitle("添加歌曲");
+        progressDialog->setLabelText("添加中                              .");
+        progressDialog->setCancelButtonText(tr("关闭"));
+        progressDialog->setRange(0,list.size()-1);
+        for (int i=0;i<list.size();i++)
+        {
+            QListWidgetItem *item=new QListWidgetItem;
+            item->setIcon(QIcon(":/icon/resources/icon/addMusic.png"));
+            QString path=QDir::toNativeSeparators(list.at(i));
+            progressDialog->setValue(i);
+            if (i==list.size()-1)
+                progressDialog->close();
+            if (progressDialog->wasCanceled())
+                progressDialog->close();
+            if (!path.isEmpty())
+            {
+                playList_PlayList->addMedia(QUrl::fromLocalFile(path));
+                QString name=path.split("\\").last();
+                name.remove(QString(".mp3"));
+                item->setText(QString("%1").arg(name));
+                ui->playlistList->addItem(item);
+                query.exec(QString("insert into NIMA values (%1,'%2','%3')").arg(qrand()%10000).arg(name).arg(path));
+            }
+        }
+    }
+}
+
+void MainWindow::setBackGround_1_slot()
+{
+    QString fileName=":/background/resources/background/background_1.png";
+    QSqlQuery query;
+    query.exec("delete from WALLPAPER_DATA");
+    query.exec(QString("insert into WALLPAPER_DATA values('%1')").arg(fileName));
+    wallpaper->load(fileName);
+    palette.setBrush(QPalette::Window,QBrush(wallpaper->scaled(size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
+    setPalette(palette);
+}
+
+void MainWindow::setBackGround_2_slot()
+{
+    QString fileName=":/background/resources/background/background_2.jpg";
+    QSqlQuery query;
+    query.exec("delete from WALLPAPER_DATA");
+    query.exec(QString("insert into WALLPAPER_DATA values('%1')").arg(fileName));
+    wallpaper->load(fileName);
+    palette.setBrush(QPalette::Window,QBrush(wallpaper->scaled(size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
+    setPalette(palette);
+}
+
+void MainWindow::setBackground_customize_slot()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("文件"),"D:/",tr("图片文件(*jpg *png)"));
+    if (fileName!="")
+    {
+        QSqlQuery query;
+        query.exec("delete from WALLPAPER_DATA");
+        query.exec(QString("insert into WALLPAPER_DATA values('%1')").arg(fileName));
+        wallpaper->load(fileName);
+        palette.setBrush(QPalette::Window,QBrush(wallpaper->scaled(size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
+        setPalette(palette);
+    }
 }

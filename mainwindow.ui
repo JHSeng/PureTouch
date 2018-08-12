@@ -332,32 +332,24 @@ QPushButton:pressed
    <property name="styleSheet">
     <string notr="true">QPushButton
 {
-
-
-	background-image: url(:/image/image/music_32px_1125557_easyicon.net.png);
-
-
-background-color: rgba(255, 255, 255,0);
-border-style:outset;
-border-color:rgba(255,255,255,0);
-border-radius:4px;
-
+	background-image: url(:/icon/resources/icon/localMusic.png);
+	background-color: rgba(255, 255, 255,0);
+	border-style:outset;
+	border-color:rgba(255,255,255,0);
+	border-radius:4px;
 }
 
-QPushButton:hover{
-
-
-
+QPushButton:hover
+{
 	background-color: rgb(255, 255, 255,100);
-
-
 }
-QPushButton:pressed{
-	background-color: rgba(95, 95, 95,100);
-border-color:rgba(255,255,255,30);
-border-style:inset;
-color:rgba(0,0,0,100);
 
+QPushButton:pressed
+{
+	background-color: rgba(95, 95, 95,100);
+	border-color:rgba(255,255,255,30);
+	border-style:inset;
+	color:rgba(0,0,0,100);
 }
 </string>
    </property>
@@ -375,10 +367,10 @@ color:rgba(0,0,0,100);
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="page">
-    <widget class="QListWidget" name="listWidget_3">
+    <widget class="QListWidget" name="localMusicList">
      <property name="geometry">
       <rect>
        <x>1</x>
@@ -425,7 +417,7 @@ background-color:transparent;</string>
     </widget>
    </widget>
    <widget class="QWidget" name="page_3">
-    <widget class="QListWidget" name="listWidget_2">
+    <widget class="QListWidget" name="myFavouriteList">
      <property name="geometry">
       <rect>
        <x>1</x>
@@ -472,7 +464,7 @@ background-color:transparent;</string>
     </widget>
    </widget>
    <widget class="QWidget" name="page_2">
-    <widget class="QListWidget" name="listWidget">
+    <widget class="QListWidget" name="playlistList">
      <property name="geometry">
       <rect>
        <x>1</x>
@@ -617,33 +609,24 @@ color:rgba(0,0,0,100);
    <property name="styleSheet">
     <string notr="true">QPushButton
 {
-
-
-	
-	background-image: url(:/image/image/like_outline_32px_1170275_easyicon.net.png);
-
-
-background-color: rgba(255, 255, 255,0);
-border-style:outset;
-border-color:rgba(255,255,255,0);
-border-radius:4px;
-
+	background-image: url(:/icon/resources/icon/myFavouriteList.png);
+	background-color: rgba(255, 255, 255,0);
+	border-style:outset;
+	border-color:rgba(255,255,255,0);
+	border-radius:4px;
 }
 
-QPushButton:hover{
-
-
-
+QPushButton:hover
+{
 	background-color: rgb(255, 255, 255,100);
-
-
 }
-QPushButton:pressed{
-	background-color: rgba(95, 95, 95,100);
-border-color:rgba(255,255,255,30);
-border-style:inset;
-color:rgba(0,0,0,100);
 
+QPushButton:pressed
+{
+	background-color: rgba(95, 95, 95,100);
+	border-color:rgba(255,255,255,30);
+	border-style:inset;
+	color:rgba(0,0,0,100);
 }
 </string>
    </property>
@@ -661,33 +644,26 @@ color:rgba(0,0,0,100);
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">
-QPushButton
+    <string notr="true">QPushButton
 {
-
-	background-image: url(:/image/image/list_32px_1074296_easyicon.net.png);
-
-background-color: rgba(255, 255, 255,0);
-border-style:outset;
-border-color:rgba(255,255,255,0);
-border-radius:4px;
-
+	background-image: url(:/icon/resources/icon/playList.png);
+	background-color: rgba(255, 255, 255,0);
+	border-style:outset;
+	border-color:rgba(255,255,255,0);
+	border-radius:4px;
 }
 
-QPushButton:hover{
-
-
-
+QPushButton:hover
+{
 	background-color: rgb(255, 255, 255,100);
-
-
 }
-QPushButton:pressed{
-	background-color: rgba(95, 95, 95,100);
-border-color:rgba(255,255,255,30);
-border-style:inset;
-color:rgba(0,0,0,100);
 
+QPushButton:pressed
+{
+	background-color: rgba(95, 95, 95,100);
+	border-color:rgba(255,255,255,30);
+	border-style:inset;
+	color:rgba(0,0,0,100);
 }
 </string>
    </property>
@@ -698,7 +674,7 @@ color:rgba(0,0,0,100);
   <widget class="QPushButton" name="btnSelectPlayMode">
    <property name="geometry">
     <rect>
-     <x>740</x>
+     <x>820</x>
      <y>550</y>
      <width>32</width>
      <height>32</height>
@@ -993,13 +969,66 @@ QSlider::handle:vertical
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>510</y>
+     <y>500</y>
      <width>521</width>
      <height>20</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">font: 75 11pt &quot;Comic Sans MS&quot;;
+color: rgb(112, 112, 112);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnAddToCurrentList">
+   <property name="geometry">
+    <rect>
+     <x>750</x>
+     <y>550</y>
+     <width>32</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton
+{
+	background-color: rgba(255, 255, 255,0);
+	border-style:outset;
+	border-color:rgba(255,255,255,0);
+	border-radius:4px;
+}
+
+QPushButton:hover
+{
+	background-color: rgb(255, 255, 255,100);
+}
+
+QPushButton:pressed
+{
+	background-color: rgba(95, 95, 95,100);
+	border-color:rgba(255,255,255,30);
+	border-style:inset;
+	color:rgba(0,0,0,100);
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labTime">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>530</y>
+     <width>111</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 italic 11pt &quot;Comic Sans MS&quot;;
 color: rgb(112, 112, 112);</string>
    </property>
    <property name="text">
