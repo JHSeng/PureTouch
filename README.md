@@ -1,2 +1,2 @@
 # PureTouch
-# A music player written with Qt
+A music player written with Qt
