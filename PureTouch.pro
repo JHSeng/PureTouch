@@ -28,13 +28,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    about.cpp \
+    miniwindow.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    about.h \
+    miniwindow.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    about.ui \
+    miniwindow.ui
 
 RESOURCES += \
     rec.qrc

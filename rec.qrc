@@ -39,6 +39,12 @@
         <file>resources/icon/addedToPlayList.png</file>
         <file>resources/icon/myFavouriteList.png</file>
         <file>resources/icon/addMusic.png</file>
+        <file>resources/icon/PureTouchIcon.png</file>
+        <file>resources/icon/PureTouchIcon2.png</file>
+        <file>resources/icon/PureTouchIcon3.ico</file>
+        <file>resources/icon/muteVolume.png</file>
+        <file>resources/icon/mediaPlaySmall.png</file>
+        <file>resources/icon/delete.png</file>
     </qresource>
     <qresource prefix="/background">
         <file>resources/background/background_1.png</file>
