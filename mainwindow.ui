@@ -367,7 +367,7 @@ QPushButton:pressed
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QListWidget" name="localMusicList">
@@ -516,7 +516,7 @@ font: 75 11pt &quot;Comic Sans MS&quot;;
     </widget>
    </widget>
    <widget class="QWidget" name="page_4">
-    <widget class="QListWidget" name="listWidget_4">
+    <widget class="QListWidget" name="searchList">
      <property name="geometry">
       <rect>
        <x>1</x>

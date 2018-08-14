@@ -87,6 +87,11 @@ private slots:
     void Action1_3_slot();
     void Action2_3_slot();
     void Action3_3_slot();
+    void Action_slot();
+    void Action_1_slot();
+    void Action_2_slot();
+    void Action_3_slot();
+    void Action_4_slot();
 
     void on_btnPlayOrPause_clicked();
 
@@ -125,6 +130,14 @@ private slots:
     void on_btnAddToCurrentList_clicked();
 
     void on_btnSearch_clicked();
+
+    void on_searchList_doubleClicked(const QModelIndex &index);
+
+    void on_searchList_customContextMenuRequested(const QPoint &pos);
+
+    void on_searchBar_returnPressed();
+
+    void PlaylistModel_slot(QMediaPlaylist::PlaybackMode model);
 
 private:
     Ui::MainWindow *ui;
@@ -168,6 +181,7 @@ private:
     MiniWindow *miniwindow=NULL;
 
     QMenu *menu;
+    QList<int>load;
 
 signals:
     void signal_showAbout();

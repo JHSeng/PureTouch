@@ -41,7 +41,7 @@ public:
     QWidget *page_2;
     QListWidget *playlistList;
     QWidget *page_4;
-    QListWidget *listWidget_4;
+    QListWidget *searchList;
     QPushButton *btnShowOrHideList;
     QPushButton *btnMyFavourite;
     QPushButton *btnPlayList;
@@ -364,11 +364,11 @@ public:
         playList->addWidget(page_2);
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        listWidget_4 = new QListWidget(page_4);
-        listWidget_4->setObjectName(QStringLiteral("listWidget_4"));
-        listWidget_4->setGeometry(QRect(1, 0, 300, 500));
-        listWidget_4->setContextMenuPolicy(Qt::CustomContextMenu);
-        listWidget_4->setStyleSheet(QLatin1String("QListWidget\n"
+        searchList = new QListWidget(page_4);
+        searchList->setObjectName(QStringLiteral("searchList"));
+        searchList->setGeometry(QRect(1, 0, 300, 500));
+        searchList->setContextMenuPolicy(Qt::CustomContextMenu);
+        searchList->setStyleSheet(QLatin1String("QListWidget\n"
 "{\n"
 "background-color:transparent;\n"
 "color: rgb(0, 0, 0);\n"
@@ -376,10 +376,10 @@ public:
 "\n"
 "\n"
 "}"));
-        listWidget_4->setFrameShape(QFrame::NoFrame);
-        listWidget_4->setLineWidth(0);
-        listWidget_4->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        listWidget_4->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        searchList->setFrameShape(QFrame::NoFrame);
+        searchList->setLineWidth(0);
+        searchList->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        searchList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         playList->addWidget(page_4);
         btnShowOrHideList = new QPushButton(MainWindow);
         btnShowOrHideList->setObjectName(QStringLiteral("btnShowOrHideList"));
@@ -690,7 +690,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        playList->setCurrentIndex(2);
+        playList->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

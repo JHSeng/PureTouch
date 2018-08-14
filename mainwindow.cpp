@@ -217,8 +217,34 @@ MainWindow::MainWindow(QWidget *parent) :
     model_3->setTable("NIMA");
     model_3->select();  //这段代码写得不明所以，但肯定有用，end
 
-    //信号和槽相关设置,要先写完预设的函数，对应原来的297行
-
+    connect(mediaPlayer,&QMediaPlayer::metaDataAvailableChanged,this,&MainWindow::updatePlayState);
+    connect(mediaPlayer,&QMediaPlayer::positionChanged,this,&MainWindow::updatePlayPosition);
+    connect(mediaPlayer,&QMediaPlayer::durationChanged,this,&MainWindow::updatePlayDuration);
+    connect(ui->songSlider,&QSlider::sliderMoved,mediaPlayer,&QMediaPlayer::setPosition);
+    connect(playList_LocalMusic,&QMediaPlaylist::currentIndexChanged,this,&MainWindow::updateLocalMusicList);
+    connect(playList_MyFavourite,&QMediaPlaylist::currentIndexChanged,this,&MainWindow::updateMyFavouriteList);
+    connect(playList_PlayList,&QMediaPlaylist::currentIndexChanged,this,&MainWindow::updatePlaylistList);
+    connect(addToLocalMusic,&QAction::triggered,this,&MainWindow::addToLocalMusic_slot);
+    connect(addToMyFavourite,&QAction::triggered,this,&MainWindow::addToMyFavourite_slot);
+    connect(addToPlaylist,&QAction::triggered,this,&MainWindow::addToPlaylist_slot);
+    connect(setBackGround_1,&QAction::triggered,this,&MainWindow::setBackGround_1_slot);
+    connect(setBackGround_2,&QAction::triggered,this,&MainWindow::setBackGround_2_slot);
+    connect(setBackground_customize,&QAction::triggered,this,&MainWindow::setBackground_customize_slot);
+    connect(clearLocalMusic,&QAction::triggered,this,&MainWindow::clearLocalMusic_slot);
+    connect(clearMyFavourite,&QAction::triggered,this,&MainWindow::clearMyFavourite_slot);
+    connect(clearPlaylist,&QAction::triggered,this,&MainWindow::clearPlaylist_slot);
+    connect(clearAllList,&QAction::triggered,this,&MainWindow::clearAllList_slot);
+    connect(preSong,&QAction::triggered,this,&MainWindow::preSong_slot);
+    connect(nextSong,&QAction::triggered,this,&MainWindow::nextSong_slot);
+    connect(playOrPause,&QAction::triggered,this,&MainWindow::playOrPause_slot);
+    connect(playInOrder,&QAction::triggered,this,&MainWindow::playInOrder_slot);
+    connect(playShuffle,&QAction::triggered,this,&MainWindow::playShuffle_slot);
+    connect(playSingleCycle,&QAction::triggered,this,&MainWindow::playSingleCycle_slot);
+    connect(ui->volumeSlider,&QSlider::valueChanged,this,&MainWindow::changeVolume);
+    connect(mediaPlayer,&QMediaPlayer::stateChanged,this,&MainWindow::musicStateChange);
+    //第332行实现miniStyle的信号和槽
+    connect(songInfo,&QAction::triggered,this,&MainWindow::songInfo_slot);
+    connect(playList_LocalMusic,&QMediaPlaylist::playbackModeChanged,this,&MainWindow::PlaylistModel_slot);
 }
 
 MainWindow::~MainWindow()
@@ -1362,6 +1388,165 @@ void MainWindow::Action3_3_slot()
 
 }
 
+void MainWindow::Action_slot()
+{
+    int row=ui->searchList->currentIndex().row();
+    if (mediaPlayer->playlist()==playList_LocalMusic)
+    {
+        if (load[row]==playList_LocalMusic->currentIndex())
+        {
+            if (mediaPlayer->state()==QMediaPlayer::PlayingState)
+                mediaPlayer->pause();
+            else
+                mediaPlayer->play();
+        }
+        else
+        {
+            playList_LocalMusic->setCurrentIndex(load[row]);
+            mediaPlayer->play();
+            ui->localMusicList->item(load[row])->setSelected(true);
+        }
+    }
+    else
+    {
+        mediaPlayer->setPlaylist(playList_LocalMusic);
+        playList_LocalMusic->setCurrentIndex(load[row]);
+        mediaPlayer->play();
+    }
+}
+
+void MainWindow::Action_1_slot()
+{
+    model_1->setTable("HAHAHA");
+    model_1->select();
+    int row=ui->searchList->currentIndex().row();
+    int flag=model_1->data(model_1->index(load[row],3)).toInt();
+    if (flag==0)
+    {
+        QString Text=ui->localMusicList->item(load[row])->text();
+        QListWidgetItem *itemm=new QListWidgetItem;
+        itemm->setIcon(QIcon(":/icon/resources/icon/addToMyFavourite.png"));
+        itemm->setText(QString("%1").arg(Text));
+        ui->myFavouriteList->addItem(itemm);
+        QSqlQuery query;
+        playList_MyFavourite->addMedia(playList_LocalMusic->media(load[row]));
+        model_1->setTable("HAHAHA");
+        model_1->select();
+        QString musicName=model_1->data(model_1->index(load[row],1)).toString();
+        QString fileName=model_1->data(model_1->index(load[row],2)).toString();
+        model_1->setData(model_1->index(load[row],3),1);
+        model_1->submitAll();
+        query.exec("select * from I_LIKE_DATA");
+        query.exec(QString("insert into I_LIKE_DATA values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
+        ui->playList->setCurrentIndex(1);
+        setBtnMyFavouriteLightUp();
+        if (mediaPlayer->playlist()==playList_LocalMusic)
+        {
+            if (playList_LocalMusic->currentIndex()==load[row])
+            {
+                ui->btnAddToCurrentList->setIcon(QIcon(":/icon/resources/icon/liked.png"));
+                ui->btnAddToCurrentList->setToolTip(tr("已经喜欢"));
+            }
+        }
+    }
+    else
+        QMessageBox::information(this,tr("提示"),tr("该歌曲已添加                              ."),QMessageBox::Yes);
+}
+
+void MainWindow::Action_2_slot()
+{
+    int row=ui->searchList->currentIndex().row();
+    QString Text=ui->localMusicList->item(load[row])->text();
+    QListWidgetItem *itemm=new QListWidgetItem;
+    itemm->setIcon(QIcon(":/icon/resources/icon/addMusic.png"));
+    itemm->setText(QString("%1").arg(Text));
+    model_1->setTable("HAHAHA");
+    model_1->select();
+    playList_PlayList->addMedia(playList_LocalMusic->media(load[row]));
+    QSqlQuery query;
+    QString musicName=model_1->data(model_1->index(load[row],1)).toString();
+    QString fileName=model_1->data(model_1->index(load[row],2)).toString();
+    query.exec("select * from NIMA");
+    query.exec(QString("insert into NIMA values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
+    ui->playList->setCurrentIndex(2);
+    setBtnPlaylistLightUp();
+}
+
+void MainWindow::Action_3_slot()
+{
+    if (mediaPlayer->playlist()==playList_LocalMusic)
+    {
+        int Row=playList_LocalMusic->currentIndex();
+        int row=ui->searchList->currentIndex().row();
+        if (load[row]<Row)
+        {
+            int Position;
+            if (mediaPlayer->state()==QMediaPlayer::PlayingState)
+                Position=mediaPlayer->position();
+            playList_LocalMusic->setCurrentIndex(0);
+            ui->localMusicList->takeItem(load[row]);
+            ui->searchList->takeItem(row);
+            playList_LocalMusic->removeMedia(load[row],load[row]);
+            model_1->setTable("HAHAHA");
+            model_1->select();
+            model_1->removeRow(load[row]);
+            model_1->submitAll();
+            mediaPlayer->setPlaylist(playList_LocalMusic);
+            playList_LocalMusic->setCurrentIndex(Row-1);
+            mediaPlayer->setPosition(Position);
+            ui->songSlider->setValue(Position);
+            mediaPlayer->play();
+        }
+        else
+        {
+            ui->searchList->takeItem(row);
+            ui->localMusicList->takeItem(load[row]);
+            playList_LocalMusic->removeMedia(load[row],load[row]);
+            model_1->setTable("HAHAHA");
+            model_1->select();
+            model_1->removeRow(load[row]);
+            model_1->submitAll();
+        }
+    }
+    else
+    {
+        int row=ui->searchList->currentIndex().row();
+        ui->searchList->takeItem(row);
+        ui->localMusicList->takeItem(load[row]);
+        playList_LocalMusic->removeMedia(load[row],load[row]);
+        model_1->setTable("HAHAHA");
+        model_1->select();
+        model_1->removeRow(load[row]);
+        model_1->submitAll();
+    }
+}
+
+void MainWindow::Action_4_slot()
+{
+    int row=ui->searchList->currentIndex().row();
+    QString temp=ui->searchList->currentIndex().data().toString();
+    QString musicName=temp.split(" - ").last();
+    QString author=temp.remove(" - "+musicName);
+    model_1->setTable("HAHAHA");
+    model_1->select();
+    QString fileName=model_1->data(model_1->index(load[row],2)).toString();
+    QString time;
+    if (mediaPlayer->playlist()==playList_LocalMusic)
+    {
+        //原来的感觉这里有错，原来的是load[row]=playList_LocalMusic->currentIndex()
+        if (load[row]==playList_LocalMusic->currentIndex())
+            time=Time(mediaPlayer->duration());
+        else
+            time="00:00";
+    }
+    else
+        time="00:00";
+    QMessageBox::about(this,tr("歌曲信息"),tr("歌曲名: %1  \n"
+                                             "作者: %2 \n"
+                                             "时长: %3 \n"
+                                             "文件路径: %4\n").arg(musicName).arg(author).arg(time).arg(fileName));
+}
+
 
 void MainWindow::on_btnPlayOrPause_clicked()
 {
@@ -1663,7 +1848,9 @@ void MainWindow::on_playlistList_customContextMenuRequested(const QPoint &pos)
     Action2_3->setText(tr("移除"));
     Action3_3->setIcon(QIcon(":/icon/resources/icon/songInfo.png"));
     Action3_3->setText(tr("歌曲信息"));
-    //信号和槽设置，对应原来的2023行
+    connect(Action1_3,&QAction::triggered,this,&MainWindow::Action1_3_slot);
+    connect(Action2_3,&QAction::triggered,this,&MainWindow::Action2_3_slot);
+    connect(Action3_3,&QAction::triggered,this,&MainWindow::Action3_3_slot);
     Menu->exec(QCursor::pos());
     delete Menu;
     delete Action1_3;
@@ -1749,5 +1936,142 @@ void MainWindow::on_btnAddToCurrentList_clicked()
 
 void MainWindow::on_btnSearch_clicked()
 {
+    QString text=ui->searchBar->text();
+    if (text!="")
+    {
+        load.clear();
+        ui->searchList->clear();
+        std::string MusicName=ui->searchBar->text().toStdString();
+        const char *MusicName1=MusicName.c_str();
+        ui->playList->setCurrentIndex(3);
+        int Count=ui->localMusicList->count();
+        setNoBtnLightUp();
+        for (int i=0;i<Count;i++)
+        {
+            QString Text=ui->localMusicList->item(i)->text();
+            QString Name=Text.split("- ").last();
+            std::string Name1=Name.toStdString();
+            const char *Name2=Name1.c_str();
+            QString author=Text.remove(" - "+Name);
+            std::string author1=author.toStdString();
+            const char *author2=author1.c_str();
+            if (strstr(Name2,MusicName1) || strstr(author2,MusicName1))
+            {
+                QString Text=ui->localMusicList->item(i)->text();
+                QListWidgetItem *item20=new QListWidgetItem;
+                item20->setIcon(QIcon(":/icon/resources/icon/search.png"));
+                item20->setText(Text);
+                ui->searchList->addItem(item20);
+                load.push_back(i);
+            }
+        }
+        ui->searchBar->clear();
+    }
+}
 
+void MainWindow::on_searchList_doubleClicked(const QModelIndex &index)
+{
+    mediaPlayer->setPlaylist(playList_LocalMusic);
+    playList_LocalMusic->setCurrentIndex(load[ui->searchList->currentIndex().row()]);
+    mediaPlayer->play();
+}
+
+void MainWindow::on_searchList_customContextMenuRequested(const QPoint &pos)
+{
+    QListWidgetItem *item20=ui->searchList->itemAt(pos);
+    if (item20==NULL)
+        return;
+    QMenu *menu20=new QMenu(this);
+    QAction *Action=new QAction(this);
+    QAction *Action1=new QAction(this);
+    QAction *Action2=new QAction(this);
+    QAction *Action3=new QAction(this);
+    QAction *Action4=new QAction(this);
+    Action->setIcon(QIcon(":/icon/resources/icon/mediaPlaySmall.png"));
+    Action->setText(tr("播放/暂停"));
+    Action1->setIcon(QIcon(":/icon/resources/icon/addToMyFavourite.png"));
+    Action1->setText(tr("添加到我喜欢"));
+    Action2->setIcon(QIcon(":/icon/resources/icon/playList.png"));
+    Action2->setText(tr("添加到播放队列"));
+    Action3->setIcon(QIcon(":/icon/resources/icon/delete.png"));
+    Action3->setText(tr("删除歌曲"));
+    Action4->setIcon(QIcon(":/icon/resources/icon/songInfo.png"));
+    Action4->setText(tr("歌曲信息"));
+    connect(Action,&QAction::triggered,this,&MainWindow::Action_slot);
+    connect(Action1,&QAction::triggered,this,&MainWindow::Action1_slot);
+    connect(Action2,&QAction::triggered,this,&MainWindow::Action2_slot);
+    connect(Action3,&QAction::triggered,this,&MainWindow::Action3_slot);
+    connect(Action4,&QAction::triggered,this,&MainWindow::Action4_slot);
+    menu20->addAction(Action);
+    menu20->addAction(Action1);
+    menu20->addAction(Action2);
+    menu20->addAction(Action4);
+    menu20->addAction(Action3);
+    menu20->exec(QCursor::pos());
+    delete Action;
+    delete Action1;
+    delete Action2;
+    delete Action3;
+    delete Action4;
+    delete menu20;
+}
+
+void MainWindow::on_searchBar_returnPressed()
+{
+    QString text=ui->searchBar->text();
+    if (text!="")
+    {
+        load.clear();
+        ui->searchList->clear();
+        std::string musicName=ui->searchBar->text().toStdString();
+        const char *musicName1=musicName.c_str();
+        ui->playList->setCurrentIndex(3);
+        int count=ui->localMusicList->count();
+        setNoBtnLightUp();
+        for (int i=0;i<count;i++)
+        {
+            QString Text=ui->localMusicList->item(i)->text();
+            QString Name=Text.split("- ").last();
+            std::string Name1=Name.toStdString();
+            const char *Name2=Name1.c_str();
+            QString author=Text.remove(" - "+Name);
+            std::string author1=author.toStdString();
+            const char *author2=author1.c_str();
+            qDebug()<<Name;
+            qDebug()<<author;
+            if (strstr(Name2,musicName1) || strstr(author2,musicName1))
+            {
+                QString Text=ui->localMusicList->item(i)->text();
+                QListWidgetItem *item=new QListWidgetItem;
+                item->setIcon(QIcon(":/icon/resources/icon/search.png"));
+                item->setText(Text);
+                ui->searchList->addItem(item);
+                load.push_back(i);
+            }
+        }
+        ui->searchBar->clear();
+    }
+}
+
+void MainWindow::PlaylistModel_slot(QMediaPlaylist::PlaybackMode model)
+{
+    //原函数这里绝对有bug
+    if (model==QMediaPlaylist::Loop)
+    {
+        ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/inOrder.png"));
+        ui->btnSelectPlayMode->setToolTip(tr("顺序播放"));
+        playList_LocalMusic->setPlaybackMode(QMediaPlaylist::Loop);
+    }
+    else if (model==QMediaPlaylist::Random)
+    {
+        ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/shuffle.png"));
+        ui->btnSelectPlayMode->setToolTip(tr("随机播放"));
+        playList_LocalMusic->setPlaybackMode(QMediaPlaylist::Random);
+    }
+    else if (model==QMediaPlaylist::CurrentItemInLoop)
+    {
+        ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/singleCycle.png"));
+        ui->btnSelectPlayMode->setToolTip(tr("单曲循环"));
+        playList_LocalMusic->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+    }
 }
