@@ -49,5 +49,6 @@
     <qresource prefix="/background">
         <file>resources/background/background_1.png</file>
         <file>resources/background/background_2.jpg</file>
+        <file>resources/background/background_3.jpg</file>
     </qresource>
 </RCC>

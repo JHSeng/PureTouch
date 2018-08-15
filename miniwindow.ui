@@ -91,7 +91,7 @@ QPushButton:pressed
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>70</y>
+     <y>80</y>
      <width>48</width>
      <height>48</height>
     </rect>
@@ -128,7 +128,7 @@ QPushButton:pressed
    <property name="geometry">
     <rect>
      <x>230</x>
-     <y>70</y>
+     <y>80</y>
      <width>48</width>
      <height>48</height>
     </rect>
@@ -136,28 +136,23 @@ QPushButton:pressed
    <property name="styleSheet">
     <string notr="true">QPushButton
 {
-
-
-background-color: rgba(255, 255, 255,0);
-border-style:outset;
-border-color:rgba(255,255,255,0);
-border-radius:4px;
-
+	background-color: rgba(255, 255, 255,0);	
+	border-style:outset;
+	border-color:rgba(255,255,255,0);
+	border-radius:4px;
 }
-QPushButton:hover{
 
-
-
+QPushButton:hover
+{
 	background-color: rgb(255, 255, 255,100);
-
-
 }
-QPushButton:pressed{
-	background-color: rgba(95, 95, 95,100);
-border-color:rgba(255,255,255,30);
-border-style:inset;
-color:rgba(0,0,0,100);
 
+QPushButton:pressed
+{
+	background-color: rgba(95, 95, 95,100);
+	border-color:rgba(255,255,255,30);
+	border-style:inset;
+	color:rgba(0,0,0,100);
 }
 </string>
    </property>
@@ -178,30 +173,31 @@ color:rgba(0,0,0,100);
     <cursorShape>PointingHandCursor</cursorShape>
    </property>
    <property name="styleSheet">
-    <string notr="true">
-    QSlider::add-page:Horizontal
-     {     
-background-color: rgba(255, 255, 255,100);
-        height:4px;  
-     } 
-     QSlider::sub-page:Horizontal   
-    {  
-background-color: rgb(255, 255, 255);
-        height:4px;
-     }
-    QSlider::groove:Horizontal   
-    { 
-        background:transparent; 
-        height:4px;
-    }  
-    QSlider::handle:Horizontal  
-    { 
-        height:16px; 
-        width:16px; 
-	
-	border-image: url(:/image/image/圆形 (9).png);
-  margin: -6 0px; 
-    }
+    <string notr="true">QSlider::add-page:Horizontal
+{     
+	background-color: rgba(255, 255, 255,100);
+    height:4px;  
+} 
+
+QSlider::sub-page:Horizontal   
+{  
+	background-color: rgb(255, 255, 255);
+    height:4px;
+}
+
+QSlider::groove:Horizontal   
+{ 
+    background:transparent; 
+    height:4px;
+}  
+
+QSlider::handle:Horizontal  
+{ 
+    height:16px; 
+    width:16px; 
+	border-image: url(:/icon/resources/icon/greyDot.png);
+  	margin: -6 0px; 
+}
       
 </string>
    </property>
@@ -213,7 +209,7 @@ background-color: rgb(255, 255, 255);
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>70</y>
+     <y>80</y>
      <width>48</width>
      <height>48</height>
     </rect>
@@ -287,6 +283,103 @@ QPushButton:pressed
      <width>256</width>
      <height>256</height>
     </size>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnSelectPlayMode">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>90</y>
+     <width>32</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton
+{
+	background-color: rgba(255, 255, 255,0);
+	border-style:outset;
+	border-color:rgba(255,255,255,0);
+	border-radius:4px;
+}
+
+QPushButton:hover
+{
+	background-color: rgb(255, 255, 255,100);
+}
+
+QPushButton:pressed
+{
+	background-color: rgba(95, 95, 95,100);
+	border-color:rgba(255,255,255,30);
+	border-style:inset;
+	color:rgba(0,0,0,100);
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnSongSource">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>90</y>
+     <width>32</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton
+{
+
+
+background-color: rgba(255, 255, 255,0);
+border-style:outset;
+border-color:rgba(255,255,255,0);
+border-radius:4px;
+
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labPlayState">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>10</y>
+     <width>351</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 11pt &quot;Comic Sans MS&quot;;
+color: rgb(112, 112, 112);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labTime">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>30</y>
+     <width>101</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 italic 9pt &quot;Comic Sans MS&quot;;
+color: rgb(112, 112, 112);</string>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>
