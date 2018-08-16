@@ -72,6 +72,14 @@ MiniWindow::~MiniWindow()
     delete ui;
 }
 
+static QString Time(qint64 time)
+{
+    int sec=time/1000;
+    int min=sec/60;
+    sec-=min*60;
+    return QStringLiteral("%1:%2").arg(min,2,10,QLatin1Char('0')).arg(sec,2,10,QLatin1Char('0'));
+}
+
 void MiniWindow::setPlaylist(QMediaPlaylist *list, int row, int position, int volume, QMediaPlayer::State state, QMediaPlaylist::PlaybackMode playmodel, int i)
 {
     playList=list;
@@ -144,6 +152,42 @@ void MiniWindow::updateSongInfo()
     ui->labPlayState->setText(Text);
 }
 
+void MiniWindow::updateSongPosition(qint64 position)
+{
+    ui->songSlider->setValue(position);
+    ui->labTime->setText(Time(position)+"/"+Time(mediaPlayer->duration()));
+}
+
+void MiniWindow::updateSongDuration(qint64 duration)
+{
+    ui->songSlider->setRange(0,duration);
+    ui->songSlider->setEnabled(duration>0);
+    ui->songSlider->setPageStep(duration/10);
+}
+
+void MiniWindow::playStateChange(QMediaPlayer::State state)
+{
+    if (state==QMediaPlayer::PlayingState)
+    {
+        ui->btnPlayOrPause->setIcon(QIcon(":/icon/resources/icon/mediaPause.png"));
+        ui->btnPlayOrPause->setToolTip(tr("暂停"));
+    }
+    else
+    {
+        ui->btnPlayOrPause->setIcon(QIcon(":/icon/resources/icon/mediaPlay.png"));
+        ui->btnPlayOrPause->setToolTip(tr("播放"));
+    }
+}
+
+void MiniWindow::contextMenuEvent(QContextMenuEvent *event)
+{
+    menu=new QMenu(this);
+    menu->addAction(playOrPause);
+    menu->addAction(playNextSong);
+    menu->addAction(playPreSong);
+    menu->exec(QCursor::pos());
+}
+
 void MiniWindow::on_btnClose_clicked()
 {
     QCoreApplication::quit();
@@ -159,4 +203,102 @@ void MiniWindow::on_btnNormalStyle_clicked()
 void MiniWindow::on_btnMinimize_clicked()
 {
     showMinimized();
+}
+
+void MiniWindow::on_btnPlayOrPause_clicked()
+{
+    if (mediaPlayer->state()==QMediaPlayer::PlayingState)
+    {
+        mediaPlayer->pause();
+        ui->btnPlayOrPause->setIcon(QIcon(":/icon/resources/icon/mediaPlay.png"));
+        ui->btnPlayOrPause->setToolTip(tr("播放"));
+    }
+    else
+    {
+        mediaPlayer->play();
+        ui->btnPlayOrPause->setIcon(QIcon(":/icon/resources/icon/mediaPause.png"));
+        ui->btnPlayOrPause->setToolTip(tr("暂停"));
+    }
+}
+
+void MiniWindow::on_btnNextSong_clicked()
+{
+    int currentIndex=playList->currentIndex();
+    if (++currentIndex==playList->mediaCount())
+        currentIndex=0;
+    playList->setCurrentIndex(currentIndex);
+}
+
+void MiniWindow::on_btnPreSong_clicked()
+{
+    int currentIndex=playList->currentIndex();
+    if (--currentIndex<0)
+        currentIndex=0;
+    playList->setCurrentIndex(currentIndex);
+}
+
+void MiniWindow::playOrPause_slot()
+{
+    if (mediaPlayer->state()==QMediaPlayer::PlayingState)
+        mediaPlayer->pause();
+    else
+        mediaPlayer->play();
+}
+
+void MiniWindow::playNextSong_slot()
+{
+    int currentIndex=playList->currentIndex();
+    if (++currentIndex==playList->mediaCount())
+        currentIndex=0;
+    playList->setCurrentIndex(currentIndex);
+}
+
+void MiniWindow::playPreSong_slot()
+{
+    int currentIndex=playList->currentIndex();
+    if (--currentIndex<0)
+        currentIndex=0;
+    playList->setCurrentIndex(currentIndex);
+}
+
+void MiniWindow::on_btnSelectPlayMode_clicked()
+{
+    if (playList->playbackMode()==QMediaPlaylist::Loop)
+    {
+        ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/shuffle.png"));
+        ui->btnSelectPlayMode->setToolTip(tr("随机播放"));
+        playList->setPlaybackMode(QMediaPlaylist::Random);
+    }
+    else if (playList->playbackMode()==QMediaPlaylist::Random)
+    {
+        ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/singleCycle.png"));
+        ui->btnSelectPlayMode->setToolTip(tr("单曲循环"));
+        playList->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+    }
+    else if (playList->playbackMode()==QMediaPlaylist::CurrentItemInLoop)
+    {
+        ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/inOrder.png"));
+        ui->btnSelectPlayMode->setToolTip(tr("顺序播放"));
+        playList->setPlaybackMode(QMediaPlaylist::Loop);
+    }
+}
+
+void MiniWindow::playBackModeChanged_slot(QMediaPlaylist::PlaybackMode model)
+{
+    if (model==QMediaPlaylist::Loop)
+    {
+        ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/inOrder.png"));
+        ui->btnSelectPlayMode->setToolTip(tr("顺序播放"));
+    }
+    else if (model==QMediaPlaylist::Random)
+    {
+        ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/shuffle.png"));
+        ui->btnSelectPlayMode->setToolTip(tr("随机播放"));
+    }
+    else if (model==QMediaPlaylist::CurrentItemInLoop)
+    {
+        ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/singleCycle.png"));
+        ui->btnSelectPlayMode->setToolTip(tr("单曲循环"));
+        playList->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+    }
 }

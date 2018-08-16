@@ -30,6 +30,10 @@ public:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void updateSongInfo();
+    void updateSongPosition(qint64 position);
+    void updateSongDuration(qint64 duration);
+    void playStateChange(QMediaPlayer::State state);
+    void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
     void on_btnClose_clicked();
@@ -37,6 +41,22 @@ private slots:
     void on_btnNormalStyle_clicked();
 
     void on_btnMinimize_clicked();
+
+    void on_btnPlayOrPause_clicked();
+
+    void on_btnNextSong_clicked();
+
+    void on_btnPreSong_clicked();
+
+    void playOrPause_slot();
+
+    void playNextSong_slot();
+
+    void playPreSong_slot();
+
+    void on_btnSelectPlayMode_clicked();
+
+    void playBackModeChanged_slot(QMediaPlaylist::PlaybackMode model);
 
 private:
     Ui::MiniWindow *ui;

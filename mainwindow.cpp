@@ -242,7 +242,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(playSingleCycle,&QAction::triggered,this,&MainWindow::playSingleCycle_slot);
     connect(ui->volumeSlider,&QSlider::valueChanged,this,&MainWindow::changeVolume);
     connect(mediaPlayer,&QMediaPlayer::stateChanged,this,&MainWindow::musicStateChange);
-    //第332行实现miniStyle的信号和槽
+    connect(miniwindow,&MiniWindow::Data,this,&MainWindow::Data_slot);
     connect(songInfo,&QAction::triggered,this,&MainWindow::songInfo_slot);
     connect(playList_LocalMusic,&QMediaPlaylist::playbackModeChanged,this,&MainWindow::PlaylistModel_slot);
 }

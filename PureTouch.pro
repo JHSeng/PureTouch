@@ -35,7 +35,8 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     about.h \
-    miniwindow.h
+    miniwindow.h \
+    connection.h
 
 FORMS += \
         mainwindow.ui \
@@ -44,3 +45,7 @@ FORMS += \
 
 RESOURCES += \
     rec.qrc
+
+DISTFILES += PureTouchIcon3.ico
+
+RE_ICONS = PureTouchIcon3.ico
