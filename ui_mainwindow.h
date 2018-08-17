@@ -432,7 +432,7 @@ public:
 ""));
         btnPlayList = new QPushButton(MainWindow);
         btnPlayList->setObjectName(QStringLiteral("btnPlayList"));
-        btnPlayList->setGeometry(QRect(180, 10, 31, 31));
+        btnPlayList->setGeometry(QRect(190, 10, 31, 31));
         btnPlayList->setStyleSheet(QLatin1String("QPushButton\n"
 "{\n"
 "	background-image: url(:/icon/resources/icon/playList.png);\n"
@@ -460,30 +460,23 @@ public:
         btnSelectPlayMode->setGeometry(QRect(820, 550, 32, 32));
         btnSelectPlayMode->setStyleSheet(QLatin1String("QPushButton\n"
 "{\n"
-"\n"
-"\n"
-"\n"
-"background-color: rgba(255, 255, 255,0);\n"
-"border-style:outset;\n"
-"border-color:rgba(255,255,255,0);\n"
-"border-radius:4px;\n"
-"\n"
+"	background-color: rgba(255, 255, 255,0);\n"
+"	border-style:outset;\n"
+"	border-color:rgba(255,255,255,0);	\n"
+"	border-radius:4px;\n"
 "}\n"
 "\n"
-"QPushButton:hover{\n"
-"\n"
-"\n"
-"\n"
+"QPushButton:hover\n"
+"{\n"
 "	background-color: rgb(255, 255, 255,100);\n"
-"\n"
-"\n"
 "}\n"
-"QPushButton:pressed{\n"
-"	background-color: rgba(95, 95, 95,100);\n"
-"border-color:rgba(255,255,255,30);\n"
-"border-style:inset;\n"
-"color:rgba(0,0,0,100);\n"
 "\n"
+"QPushButton:pressed\n"
+"{\n"
+"	background-color: rgba(95, 95, 95,100);\n"
+"	border-color:rgba(255,255,255,30);\n"
+"	border-style:inset;\n"
+"	color:rgba(0,0,0,100);\n"
 "}\n"
 ""));
         btnVolume = new QPushButton(MainWindow);
@@ -491,29 +484,23 @@ public:
         btnVolume->setGeometry(QRect(880, 550, 32, 32));
         btnVolume->setStyleSheet(QLatin1String("QPushButton\n"
 "{\n"
-"\n"
-"\n"
-"background-color: rgba(255, 255, 255,0);\n"
-"border-style:outset;\n"
-"border-color:rgba(255,255,255,0);\n"
-"border-radius:4px;\n"
-"\n"
+"	background-color: rgba(255, 255, 255,0);\n"
+"	border-style:outset;\n"
+"	border-color:rgba(255,255,255,0);\n"
+"	border-radius:4px;\n"
 "}\n"
 "\n"
-"QPushButton:hover{\n"
-"\n"
-"\n"
-"\n"
+"QPushButton:hover\n"
+"{\n"
 "	background-color: rgb(255, 255, 255,100);\n"
-"\n"
-"\n"
 "}\n"
-"QPushButton:pressed{\n"
-"	background-color: rgba(95, 95, 95,100);\n"
-"border-color:rgba(255,255,255,30);\n"
-"border-style:inset;\n"
-"color:rgba(0,0,0,100);\n"
 "\n"
+"QPushButton:pressed\n"
+"{\n"
+"	background-color: rgba(95, 95, 95,100);\n"
+"	border-color:rgba(255,255,255,30);\n"
+"	border-style:inset;\n"
+"	color:rgba(0,0,0,100);\n"
 "}\n"
 ""));
         songSlider = new QSlider(MainWindow);
@@ -602,17 +589,16 @@ public:
         searchBar->setObjectName(QStringLiteral("searchBar"));
         searchBar->setGeometry(QRect(410, 10, 200, 32));
         searchBar->setCursor(QCursor(Qt::IBeamCursor));
-        searchBar->setStyleSheet(QLatin1String("QLineEdit{\n"
-"background-color: rgba(255, 255, 255,150);\n"
-"border-style:outset;\n"
-"\n"
-"border-width:0px;\n"
-"\n"
-"border-radius:10px;\n"
-"border-color: rgba(0,0,0,100);\n"
-"font:bold 14px;\n"
-"color:rgba(0,0,0,100);\n"
-"padding:6px;\n"
+        searchBar->setStyleSheet(QLatin1String("QLineEdit\n"
+"{\n"
+"	background-color: rgba(255, 255, 255,150);\n"
+"	border-style:outset;\n"
+"	border-width:0px;\n"
+"	border-radius:10px;\n"
+"	border-color: rgba(0,0,0,100);\n"
+"	font:bold 14px;\n"
+"	color:rgba(0,0,0,100);\n"
+"	padding:6px;\n"
 "}"));
         volumeSlider = new QSlider(MainWindow);
         volumeSlider->setObjectName(QStringLiteral("volumeSlider"));
@@ -690,7 +676,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        playList->setCurrentIndex(3);
+        playList->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

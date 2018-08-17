@@ -44,9 +44,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QMenu *menu1=new QMenu(this);
     menu1->addAction(addToLocalMusic);
     menu1->addAction(addToMyFavourite);
-    menu1->addAction(addToPlaylist);  //end
+    menu1->addAction(addToPlaylist);
+    ui->btnAddSong->setMenu(menu1); //end
 
-    //播放器背景设置
+    //播放器背景菜单设置
     setBackGround=new QAction(this);
     setBackGround_1=new QAction(this);
     setBackGround_2=new QAction(this);
@@ -100,6 +101,13 @@ MainWindow::MainWindow(QWidget *parent) :
     playOrPause->setIcon(QIcon(":/icon/resources/icon/play.png"));
     playOrPause->setText(tr("播放/暂停"));  //end
 
+    //设置按钮菜单
+    QMenu *menu2=new QMenu(this);
+    menu2->addAction(setBackGround);
+    menu2->addAction(showAbout);
+    menu2->addAction(clearList);
+    ui->btnSettings->setMenu(menu2);
+
     //选择播放模式
     selectPlayMode=new QAction(this);
     selectPlayMode->setIcon(QIcon(":/icon/resources/icon/playMode.png"));
@@ -125,17 +133,17 @@ MainWindow::MainWindow(QWidget *parent) :
     songInfo->setText(tr("查看歌曲信息"));  //end
 
     //背景相关设置
-    QSqlQuery wallpaperQuery;
-    wallpaperQuery.exec("Select * from WALLPAPER_DATA");
-    wallpaperQuery.next();
-    QString wallpaperFileName=wallpaperQuery.value(0).toString();
+    QSqlQuery query;
+    query.exec("select * from WALLPAPER_DATA");
+    query.next();
+    QString wallpaperFileName=query.value(0).toString();
     if (wallpaperFileName=="")
         wallpaper->load(":/background/resources/background/background_1.png");
     else
         wallpaper->load(wallpaperFileName);
-    wallpaperQuery.exec("Select * from TRA_DATA");
-    wallpaperQuery.next();
-    QString values=wallpaperQuery.value(0).toString(); //透明度设置
+    query.exec("select * from TRA_DATA");
+    query.next();
+    QString values=query.value(0).toString(); //透明度设置
     if (values=="")
         transparency=1;
     else
@@ -162,6 +170,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btnShowOrHideList->setIcon(QIcon(":/icon/resources/icon/hidePlayList.png"));
     ui->btnSelectPlayMode->setIconSize(QSize(32,32));
     ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/inOrder.png"));
+    ui->btnAddToCurrentList->setIconSize(QSize(32,32));
+    ui->btnAddToCurrentList->setIcon(QIcon(":/icon/resources/icon/addToMyFavourite.png"));
     ui->btnVolume->setIconSize(QSize(32,32));
     ui->btnVolume->setIcon(QIcon(":/icon/resources/icon/volume.png"));
     ui->songSlider->setToolTip(tr("播放进度"));
@@ -215,7 +225,7 @@ MainWindow::MainWindow(QWidget *parent) :
     model_2->select();
     model_3=new QSqlTableModel(this);
     model_3->setTable("NIMA");
-    model_3->select();  //这段代码写得不明所以，但肯定有用，end
+    model_3->select();  //这段代码是关于数据库的操作
 
     connect(mediaPlayer,&QMediaPlayer::metaDataAvailableChanged,this,&MainWindow::updatePlayState);
     connect(mediaPlayer,&QMediaPlayer::positionChanged,this,&MainWindow::updatePlayPosition);
@@ -245,6 +255,50 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(miniwindow,&MiniWindow::Data,this,&MainWindow::Data_slot);
     connect(songInfo,&QAction::triggered,this,&MainWindow::songInfo_slot);
     connect(playList_LocalMusic,&QMediaPlaylist::playbackModeChanged,this,&MainWindow::PlaylistModel_slot);
+
+    query.exec("select * from HAHAHA");
+    while (query.next())
+    {
+        QString name=query.value(1).toString();
+        QString fileName=query.value(2).toString();
+        if (name!="" && fileName!="")
+        {
+            QListWidgetItem *item1=new QListWidgetItem;
+            item1->setIcon(QIcon(":/icon/resources/icon/addedToPlayList.png"));
+            item1->setText(name);
+            ui->localMusicList->addItem(item1);
+            playList_LocalMusic->addMedia(QUrl::fromLocalFile(fileName));
+        }
+    }
+    query.exec("select * from I_LIKE_DATA");
+    while (query.next())
+    {
+        QString name=query.value(1).toString();
+        QString fileName=query.value(2).toString();
+        if (name!="" && fileName!="")
+        {
+            QListWidgetItem *item4=new QListWidgetItem;
+            item4->setIcon(QIcon(":/icon/resources/icon/myFavouriteList.png"));
+            item4->setText(name);
+            ui->myFavouriteList->addItem(item4);
+            playList_MyFavourite->addMedia(QUrl::fromLocalFile(fileName));
+        }
+    }
+    query.exec("select * from NIMA");
+    while (query.next())
+    {
+        QString name=query.value(1).toString();
+        QString fileName=query.value(2).toString();
+        if (name!="" && fileName!="")
+        {
+            QListWidgetItem *item5=new QListWidgetItem;
+            item5->setIcon(QIcon(":/icon/resources/icon/addMusic.png"));
+            item5->setText(name);
+            ui->playlistList->addItem(item5);
+            playList_PlayList->addMedia(QUrl::fromLocalFile(fileName));
+        }
+    }
+    mediaPlayer->setPlaylist(playList_LocalMusic);
 }
 
 MainWindow::~MainWindow()
@@ -670,7 +724,7 @@ void MainWindow::clearLocalMusic_slot()
     {
         QSqlQuery query;
         query.exec("select * from HAHAHA");
-        query.exec("delect from HAHAHA");
+        query.exec("delete from HAHAHA");
         ui->localMusicList->clear();
         playList_LocalMusic->clear();
     }
@@ -769,7 +823,7 @@ void MainWindow::addToMyFavourite_slot()
     ui->playList->setCurrentIndex(1);
     setBtnMyFavouriteLightUp();
     QSqlQuery query;
-    query.exec("select *from I_LIKE_DATA");
+    query.exec("select * from I_LIKE_DATA");
     QStringList list=QFileDialog::getOpenFileNames(this,tr("所有文件"),"D:/",tr("音频文件(*.mp3)"));
     if (!list.isEmpty())
     {
@@ -809,7 +863,7 @@ void MainWindow::addToPlaylist_slot()
     ui->playList->setCurrentIndex(2);
     setBtnPlaylistLightUp();
     QSqlQuery query;
-    query.exec("select *from NIMA");
+    query.exec("select * from NIMA");
     QStringList list=QFileDialog::getOpenFileNames(this,tr("所有文件"),"D:/",tr("音频文件(*.mp3)"));
     if(!list.isEmpty())
     {
@@ -1060,6 +1114,7 @@ void MainWindow::Action2_slot()
         model_1->submitAll();
         query.exec("select * from I_LIKE_DATA");
         query.exec(QString("insert into I_LIKE_DATA values (%1,'%2',%3)").arg(qrand()%10000).arg(musicName).arg(fileName));
+        ui->playList->setCurrentIndex(1);
         setBtnMyFavouriteLightUp();
         if (mediaPlayer->playlist()==playList_LocalMusic)
         {

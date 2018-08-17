@@ -3,14 +3,20 @@
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QMessageBox>
+#include <QApplication>
 
 static bool creatConnection()
 {
     QSqlDatabase dataBase=QSqlDatabase::addDatabase("QSQLITE");
     dataBase.setDatabaseName("music.db");
-    dataBase.open();
+//    dataBase.setDatabaseName(":memory:");
     if (!dataBase.open())
+    {
+        QMessageBox::critical(0,qApp->tr("Cannot open database"),
+                   qApp->tr("Unable to establisha database connection."), QMessageBox::Cancel);
         return false;
+    }
     QSqlQuery query;
     query.exec(QString("create table HAHAHA (id int primary key,musicName varchar,fileName varchar,biaoji int)"));
     query.exec(QString("create table I_LIKE_DATA (id int primary key,musicName varchar,fileName varchar)"));

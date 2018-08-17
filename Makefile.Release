@@ -766,6 +766,8 @@ release/main.o: main.cpp mainwindow.h \
 		../../../../Qt/Qt5.11.0/5.11.0/mingw53_32/include/QtSql/QSqlDatabase \
 		../../../../Qt/Qt5.11.0/5.11.0/mingw53_32/include/QtSql/QSqlQuery \
 		../../../../Qt/Qt5.11.0/5.11.0/mingw53_32/include/QtSql/qsqlquery.h \
+		../../../../Qt/Qt5.11.0/5.11.0/mingw53_32/include/QtWidgets/QMessageBox \
+		../../../../Qt/Qt5.11.0/5.11.0/mingw53_32/include/QtWidgets/qmessagebox.h \
 		../../../../Qt/Qt5.11.0/5.11.0/mingw53_32/include/QtWidgets/QApplication \
 		../../../../Qt/Qt5.11.0/5.11.0/mingw53_32/include/QtWidgets/qapplication.h \
 		../../../../Qt/Qt5.11.0/5.11.0/mingw53_32/include/QtCore/qcoreapplication.h \

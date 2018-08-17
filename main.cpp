@@ -5,15 +5,14 @@
 
 #include <QApplication>
 #include <QTime>
+#include <QVariant>
 
 int main(int argc, char *argv[])
 {
+    if (!creatConnection()) return 1;
     QApplication mainProgram(argc, argv);
     MainWindow mainWindow;
     About about;
-
-    if (!creatConnection())
-        return 1;
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
     QObject::connect(&mainWindow,SIGNAL(signal_showAbout()),&about,SLOT(showAbout_slot()));
