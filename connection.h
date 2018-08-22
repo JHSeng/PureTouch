@@ -1,30 +1,33 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
+#include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QMessageBox>
-#include <QApplication>
 
-static bool creatConnection()
+static bool createConnection()
 {
-    QSqlDatabase dataBase=QSqlDatabase::addDatabase("QSQLITE");
-    dataBase.setDatabaseName("music.db");
-//    dataBase.setDatabaseName(":memory:");
-    if (!dataBase.open())
+    QSqlDatabase db=QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("test.db");
+//    db.setHostName("jhseng");
+//    db.setUserName("jhseng");
+//    db.setPassword("1234");
+    if (!db.open())
     {
-        QMessageBox::critical(0,qApp->tr("Cannot open database"),
-                   qApp->tr("Unable to establisha database connection."), QMessageBox::Cancel);
+        QMessageBox::critical(0,"cannot open database",
+                              "Unable to establish a database connection.",
+                              QMessageBox::Cancel);
         return false;
     }
     QSqlQuery query;
-    query.exec(QString("create table HAHAHA (id int primary key,musicName varchar,fileName varchar,biaoji int)"));
-    query.exec(QString("create table I_LIKE_DATA (id int primary key,musicName varchar,fileName varchar)"));
-    query.exec(QString("create table NIMA (id int primary key,musicName varchar,fileName varchar)"));
-    query.exec(QString("create table WALLPAPER_DATA (fileName varchar primary key)"));
-    query.exec(QString("create table TRA_DATA (TRA double primary key)"));
-    query.exec(QString("create table Bizi_DATA (fileName varchar primary key)"));
-    query.exec(QString("create table Toumin_DATA (TouMin double primary key)"));
+    query.exec("create table student (id int primary key, " //创造表
+               "name varchar(20))");
+    query.exec("insert into student values(0, 'LiMing')");
+    query.exec("insert into student values(1, 'LiuTao')");
+    query.exec("insert into student values(2, 'WangHong')"); //插入数据
+
+
+
     return true;
 }
 
