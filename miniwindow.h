@@ -63,15 +63,15 @@ private:
 
     double TouMin;
 
-    QAction *playOrPause;
-    QAction *playNextSong;
-    QAction *playPreSong;
+    QAction *playOrPause=new QAction(this);
+    QAction *playNextSong=new QAction(this);
+    QAction *playPreSong=new QAction(this);
 
     QPixmap wallpaper;
     QPalette pal;
-    QMediaPlayer *mediaPlayer;
-    QMediaPlaylist *playList;
-    QMenu *menu;
+    QMediaPlayer *mediaPlayer=new QMediaPlayer(this);
+    QMediaPlaylist *playList=new QMediaPlaylist(this);
+//    QMenu *menu;
     QPoint offset;
 
 signals:

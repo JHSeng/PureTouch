@@ -45,13 +45,13 @@ MiniWindow::MiniWindow(QWidget *parent) :
     ui->btnNormalStyle->setToolTip(tr("返回主窗口"));
     ui->songSlider->setToolTip(tr("播放进度"));
 
-    mediaPlayer=new QMediaPlayer(this);
-    playList=new QMediaPlaylist(this);
+//    mediaPlayer=new QMediaPlayer(this);
+//    playList=new QMediaPlaylist(this);
     playList->setPlaybackMode(QMediaPlaylist::Loop);
 
-    playOrPause=new QAction(this);
-    playNextSong=new QAction(this);
-    playPreSong=new QAction(this);
+//    playOrPause=new QAction(this);
+//    playNextSong=new QAction(this);
+//    playPreSong=new QAction(this);
     playOrPause->setIcon(QIcon(":/icon/resources/icon/play.png"));
     playNextSong->setIcon(QIcon(":/icon/resources/icon/nextSong.png"));
     playPreSong->setIcon(QIcon(":/icon/resources/icon/preSong.png"));
@@ -181,7 +181,7 @@ void MiniWindow::playStateChange(QMediaPlayer::State state)
 
 void MiniWindow::contextMenuEvent(QContextMenuEvent *event)
 {
-    menu=new QMenu(this);
+    QMenu *menu=new QMenu(this);
     menu->addAction(playOrPause);
     menu->addAction(playNextSong);
     menu->addAction(playPreSong);

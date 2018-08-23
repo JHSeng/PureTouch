@@ -1,34 +1,26 @@
 #include "mainwindow.h"
+#include "miniwindow.h"
+#include "about.h"
 #include "connection.h"
 
-#include <QVariant>
 #include <QApplication>
-#include <QSqlDatabase>
-#include <QDebug>
-#include <QStringList>
+#include <QTime>
+#include <QVariant>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-//    qDebug()<<"Available drivers: ";
-//    QStringList drivers=QSqlDatabase::drivers();
-//    foreach (QString driver, drivers) {
-//        qDebug()<<driver;
-//    }
+    if (!CreateConnection()) return 1;
+    QApplication mainProgram(argc, argv);
+    MainWindow mainWindow;
+    About about;
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
-//    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
-//    db.setHostName("bigblue");
-//    db.setDatabaseName("flightdb");
-//    db.setUserName("acarlson");
-//    db.setPassword("1234");
-//    bool ok=db.open();
+    QObject::connect(&mainWindow,SIGNAL(signal_showAbout()),&about,SLOT(showAbout_slot()));
 
-    if (!createConnection()) return 1;
-    QSqlQuery query;
-    query.exec("select * from student");
-    while (query.next())
-    {
-        qDebug()<<query.value(0).toInt()<<query.value(1).toString();
-    }
-    return a.exec();
+    mainWindow.setWindowIcon(QIcon(":/icon/resources/icon/PureTouchIcon3.ico"));
+    mainWindow.setWindowTitle(QObject::tr("PureTouch"));
+    mainWindow.setWindowFlags(Qt::FramelessWindowHint);
+    mainWindow.show();
+
+    return mainProgram.exec();
 }

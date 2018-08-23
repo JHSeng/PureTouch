@@ -7,6 +7,8 @@ About::About(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->labGithub->setOpenExternalLinks(true);
+    setAutoFillBackground(true);
+    setWindowFlags(Qt::FramelessWindowHint);
 }
 
 About::~About()
