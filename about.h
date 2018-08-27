@@ -20,6 +20,11 @@ private slots:
 
 private:
     Ui::About *ui;
+
+    QPixmap *wallpaper=new QPixmap;
+    double transparency;
+    QPalette palette;
+
 };
 
 #endif // ABOUT_H

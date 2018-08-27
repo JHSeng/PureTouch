@@ -9,6 +9,12 @@ About::About(QWidget *parent) :
     ui->labGithub->setOpenExternalLinks(true);
     setAutoFillBackground(true);
     setWindowFlags(Qt::FramelessWindowHint);
+
+    wallpaper->load(":/background/resources/background/background_3.jpg");
+    transparency=1;
+    setWindowOpacity(transparency);
+    palette.setBrush(QPalette::Window,QBrush(wallpaper->scaled(size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
+    setPalette(palette);
 }
 
 About::~About()

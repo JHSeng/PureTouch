@@ -247,18 +247,17 @@ QPushButton:pressed
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>48</width>
-     <height>48</height>
+     <width>51</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">QPushButton
 {
-	background-image: url(:/icon/resources/icon/PureTouchIcon3.ico);
 	background-color: rgba(255, 255, 255,0);
 	border-style:outset;
 	border-color:rgba(255,255,255,0);
-	border-radius:4px;
+	border-radius:2px;
 }
 
 QPushButton:hover
@@ -278,10 +277,14 @@ QPushButton:pressed
    <property name="text">
     <string/>
    </property>
+   <property name="icon">
+    <iconset resource="rec.qrc">
+     <normaloff>:/icon/resources/icon/PureTouchIcon2.png</normaloff>:/icon/resources/icon/PureTouchIcon2.png</iconset>
+   </property>
    <property name="iconSize">
     <size>
-     <width>256</width>
-     <height>256</height>
+     <width>44</width>
+     <height>44</height>
     </size>
    </property>
   </widget>
@@ -383,6 +386,8 @@ color: rgb(112, 112, 112);</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="rec.qrc"/>
+ </resources>
  <connections/>
 </ui>

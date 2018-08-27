@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QTime>
 #include <QVariant>
+#include <QSystemTrayIcon>
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +17,7 @@ int main(int argc, char *argv[])
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
     QObject::connect(&mainWindow,SIGNAL(signal_showAbout()),&about,SLOT(showAbout_slot()));
+    QObject::connect(&mainWindow,SIGNAL(signal_hideSysTrayIcon()),&mainWindow,SLOT(hideSysTrayIcon_slot()));
 
     mainWindow.setWindowIcon(QIcon(":/icon/resources/icon/PureTouchIcon3.ico"));
     mainWindow.setWindowTitle(QObject::tr("PureTouch"));

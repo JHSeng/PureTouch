@@ -13,6 +13,7 @@
 #include <QStandardItem>
 #include <QStandardItemModel>
 #include <QSqlTableModel>
+#include <QSystemTrayIcon>
 
 #include "miniwindow.h"
 
@@ -141,6 +142,10 @@ private slots:
 
     void PlaylistModel_slot(QMediaPlaylist::PlaybackMode model);
 
+    void on_activatedSysTrayIcon(QSystemTrayIcon::ActivationReason reason);
+
+    void hideSysTrayIcon_slot();
+
 private:
     Ui::MainWindow *ui;
 
@@ -184,9 +189,11 @@ private:
 
 //    QMenu *menu;
     QList<int>load;
+    QSystemTrayIcon *systemTrayIcon=new QSystemTrayIcon(this);
 
 signals:
     void signal_showAbout();
+    void signal_hideSysTrayIcon();
 };
 
 #endif // MAINWINDOW_H

@@ -10,6 +10,7 @@
 #define UI_MINIWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QLabel>
@@ -196,14 +197,13 @@ public:
 ""));
         btnNormalStyle = new QPushButton(MiniWindow);
         btnNormalStyle->setObjectName(QStringLiteral("btnNormalStyle"));
-        btnNormalStyle->setGeometry(QRect(0, 0, 48, 48));
+        btnNormalStyle->setGeometry(QRect(0, 0, 51, 51));
         btnNormalStyle->setStyleSheet(QLatin1String("QPushButton\n"
 "{\n"
-"	background-image: url(:/icon/resources/icon/PureTouchIcon3.ico);\n"
 "	background-color: rgba(255, 255, 255,0);\n"
 "	border-style:outset;\n"
 "	border-color:rgba(255,255,255,0);\n"
-"	border-radius:4px;\n"
+"	border-radius:2px;\n"
 "}\n"
 "\n"
 "QPushButton:hover\n"
@@ -219,7 +219,10 @@ public:
 "	color:rgba(0,0,0,100);\n"
 "}\n"
 ""));
-        btnNormalStyle->setIconSize(QSize(256, 256));
+        QIcon icon;
+        icon.addFile(QStringLiteral(":/icon/resources/icon/PureTouchIcon2.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btnNormalStyle->setIcon(icon);
+        btnNormalStyle->setIconSize(QSize(44, 44));
         btnSelectPlayMode = new QPushButton(MiniWindow);
         btnSelectPlayMode->setObjectName(QStringLiteral("btnSelectPlayMode"));
         btnSelectPlayMode->setGeometry(QRect(10, 90, 32, 32));

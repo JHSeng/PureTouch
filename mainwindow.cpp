@@ -20,6 +20,7 @@
 #include <QSqlTableModel>
 #include <QFileDialog>
 #include <QDialog>
+#include <QSystemTrayIcon>]
 
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
@@ -32,10 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //以下代码的功能是实现右键菜单
 
-    //添加音乐到列表，没有加上快捷键
-//    addToLocalMusic=new QAction(this);
-//    addToMyFavourite=new QAction(this);
-//    addToPlaylist=new QAction(this);
+    //添加音乐到列表
     addToLocalMusic->setIcon(QIcon(":/resources/icon/addToLocalMusic.png"));
     addToLocalMusic->setText(tr("添加到本地音乐列表"));
     addToMyFavourite->setIcon(QIcon(":/resources/icon/myFavourite.png"));
@@ -200,13 +198,13 @@ MainWindow::MainWindow(QWidget *parent) :
         "}");
     //end
 
-    //tableModel设置
+    //数据库
     model_1->setTable("HAHAHA");
     model_1->select();
     model_2->setTable("I_LIKE_DATA");
     model_2->select();
     model_3->setTable("NIMA");
-    model_3->select();  //这段代码是关于数据库的操作
+    model_3->select();
 
     connect(mediaPlayer,&QMediaPlayer::metaDataAvailableChanged,this,&MainWindow::updatePlayState);
     connect(mediaPlayer,&QMediaPlayer::positionChanged,this,&MainWindow::updatePlayPosition);
@@ -290,7 +288,7 @@ MainWindow::~MainWindow()
 
 static QString Time(qint64 time)
 {
-    qint64 seconds=time/100;
+    qint64 seconds=time/1000;
     const qint64 minutes=seconds/60;
     seconds-=minutes*60;
     return QStringLiteral("%1:%2").arg(minutes,2,10,QLatin1Char('0')).arg(seconds,2,10,QLatin1Char('0'));
@@ -990,9 +988,17 @@ void MainWindow::nextSong_slot()
 void MainWindow::playOrPause_slot() //右键菜单
 {
     if (mediaPlayer->state()==QMediaPlayer::PlayingState)
+    {
+        ui->btnPlayOrPause->setIcon(QIcon(":/icon/resources/icon/mediaPlay.png"));
+        ui->btnPlayOrPause->setToolTip(tr("播放"));
         mediaPlayer->pause();
+    }
     else
+    {
+        ui->btnPlayOrPause->setIcon(QIcon(":/icon/resources/icon/mediaPause.png"));
+        ui->btnPlayOrPause->setToolTip(tr("暂停"));
         mediaPlayer->play();
+    }
 }
 
 void MainWindow::playInOrder_slot()
@@ -1194,7 +1200,6 @@ void MainWindow::Action5_slot()
     QString time;
     if (mediaPlayer->playlist()==playList_LocalMusic)
     {
-        //原本这里是row=playList_LocalMusic->currentIndex()，感觉有错
         if (row==playList_LocalMusic->currentIndex())
             time=Time(mediaPlayer->duration());
         else
@@ -1318,7 +1323,6 @@ void MainWindow::Action4_2_slot()
     QString time;
     if (mediaPlayer->playlist()==playList_MyFavourite)
     {
-        //原本这里是row=playList_MyFavourite->currentIndex()，感觉有错
         if (row==playList_MyFavourite->currentIndex())
             time=Time(mediaPlayer->duration());
         else
@@ -1415,7 +1419,6 @@ void MainWindow::Action3_3_slot()
     QString time;
     if (mediaPlayer->playlist()==playList_PlayList)
     {
-        //这里原本是row=playList_PlayList->currentIndex()，感觉有错
         if (row==playList_PlayList->currentIndex())
             time=Time(mediaPlayer->duration());
         else
@@ -1575,7 +1578,6 @@ void MainWindow::Action_4_slot()
     QString time;
     if (mediaPlayer->playlist()==playList_LocalMusic)
     {
-        //原来的感觉这里有错，原来的是load[row]=playList_LocalMusic->currentIndex()
         if (load[row]==playList_LocalMusic->currentIndex())
             time=Time(mediaPlayer->duration());
         else
@@ -1784,12 +1786,17 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
 
 void MainWindow::on_btnMinimize_clicked()
 {
-    showMinimized();
+    this->hide();
+    QIcon icon=QIcon(":/icon/resources/icon/PureTouchIcon3.ico");
+    systemTrayIcon->setIcon(icon);
+    systemTrayIcon->setToolTip(QObject::trUtf8("PureTouch"));
+    connect(systemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(on_activatedSysTrayIcon(QSystemTrayIcon::ActivationReason)));
+    systemTrayIcon->show();
 }
 
 void MainWindow::on_btnClose_clicked()
 {
-    close();
+    this->close();
 }
 
 void MainWindow::on_btnVolume_clicked()
@@ -1813,11 +1820,11 @@ void MainWindow::on_localMusicList_customContextMenuRequested(const QPoint &pos)
     QAction *Action4=new QAction(this);
     QAction *Action5=new QAction(this);
     Action1->setIcon(QIcon(":/icon/resources/icon/mediaPlaySmall.png"));
-    Action1->setToolTip(tr("播放/暂停"));
+    Action1->setText(tr("播放/暂停"));
     Action2->setIcon(QIcon(":/icon/resources/icon/addToMyFavourite.png"));
-    Action2->setToolTip(tr("添加到我喜欢"));
+    Action2->setText(tr("添加到我喜欢"));
     Action4->setIcon(QIcon(":/icon/resources/icon/addedToPlayList.png"));
-    Action4->setToolTip(tr("添加到播放列表"));
+    Action4->setText(tr("添加到播放列表"));
     Action3->setIcon(QIcon(":/icon/resources/icon/delete.png"));
     Action3->setText(tr("删除"));
     Action5->setIcon(QIcon(":/icon/resources/icon/songInfo.png"));
@@ -1852,13 +1859,13 @@ void MainWindow::on_myFavouriteList_customContextMenuRequested(const QPoint &pos
     QAction *Action3_2=new QAction(this);
     QAction *Action4_2=new QAction(this);
     Action1_2->setIcon(QIcon(":/icon/resources/icon/mediaPlaySmall.png"));
-    Action1_2->setToolTip(tr("播放/暂停"));
+    Action1_2->setText(tr("播放/暂停"));
     Action3_2->setIcon(QIcon(":/icon/resources/icon/playList.png"));
-    Action3_2->setToolTip(tr("添加至播放队列"));
+    Action3_2->setText(tr("添加至播放队列"));
     Action2_2->setIcon(QIcon(":/icon/resources/icon/delete.png"));
-    Action2_2->setToolTip(tr("移除"));
+    Action2_2->setText(tr("移除"));
     Action4_2->setIcon(QIcon(":/icon/resources/icon/songInfo.png"));
-    Action4_2->setToolTip(tr("歌曲信息"));
+    Action4_2->setText(tr("歌曲信息"));
     Menu1->addAction(Action1_2);
     Menu1->addAction(Action3_2);
     Menu1->addAction(Action4_2);
@@ -1974,6 +1981,7 @@ void MainWindow::on_btnAddToCurrentList_clicked()
             query.exec(QString("insert into I_LIKE_DATA values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
         }
     }
+    else return;
 }
 
 void MainWindow::on_btnSearch_clicked()
@@ -2097,7 +2105,6 @@ void MainWindow::on_searchBar_returnPressed()
 
 void MainWindow::PlaylistModel_slot(QMediaPlaylist::PlaybackMode model)
 {
-    //原函数这里绝对有bug
     if (model==QMediaPlaylist::Loop)
     {
         ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/inOrder.png"));
@@ -2116,4 +2123,29 @@ void MainWindow::PlaylistModel_slot(QMediaPlaylist::PlaybackMode model)
         ui->btnSelectPlayMode->setToolTip(tr("单曲循环"));
         playList_LocalMusic->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
     }
+}
+
+void MainWindow::on_activatedSysTrayIcon(QSystemTrayIcon::ActivationReason reason)
+{
+    if (this->isHidden())
+    {
+        switch (reason) {
+        case QSystemTrayIcon::Trigger:
+            this->show();
+            emit signal_hideSysTrayIcon();
+            break;
+        case QSystemTrayIcon::DoubleClick:
+            this->show();
+            emit signal_hideSysTrayIcon();
+            break;
+        default:
+            break;
+        }
+    }
+    else return;
+}
+
+void MainWindow::hideSysTrayIcon_slot()
+{
+    this->systemTrayIcon->hide();
 }

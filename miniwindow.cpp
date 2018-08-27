@@ -45,20 +45,24 @@ MiniWindow::MiniWindow(QWidget *parent) :
     ui->btnNormalStyle->setToolTip(tr("返回主窗口"));
     ui->songSlider->setToolTip(tr("播放进度"));
 
-//    mediaPlayer=new QMediaPlayer(this);
-//    playList=new QMediaPlaylist(this);
     playList->setPlaybackMode(QMediaPlaylist::Loop);
-
-//    playOrPause=new QAction(this);
-//    playNextSong=new QAction(this);
-//    playPreSong=new QAction(this);
     playOrPause->setIcon(QIcon(":/icon/resources/icon/play.png"));
     playNextSong->setIcon(QIcon(":/icon/resources/icon/nextSong.png"));
     playPreSong->setIcon(QIcon(":/icon/resources/icon/preSong.png"));
     playOrPause->setText(tr("播放/暂停"));
     playNextSong->setText(tr("下一首"));
     playPreSong->setText(tr("上一首"));
-    //信号和槽设置，对应原115行
+
+    connect(mediaPlayer,&QMediaPlayer::metaDataAvailableChanged,this,&MiniWindow::updateSongInfo);
+    connect(mediaPlayer,&QMediaPlayer::positionChanged,this,&MiniWindow::updateSongPosition);
+    connect(mediaPlayer,&QMediaPlayer::durationChanged,this,&MiniWindow::updateSongDuration);
+    connect(mediaPlayer,&QMediaPlayer::stateChanged,this,&MiniWindow::playStateChange);
+    connect(ui->songSlider,&QSlider::sliderMoved,mediaPlayer,&QMediaPlayer::setPosition);
+    connect(playOrPause,&QAction::triggered,this,&MiniWindow::playOrPause_slot);
+    connect(playNextSong,&QAction::triggered,this,&MiniWindow::playNextSong_slot);
+    connect(playPreSong,&QAction::triggered,this,&MiniWindow::playPreSong_slot);
+    connect(playList,&QMediaPlaylist::playbackModeChanged,this,&MiniWindow::playBackModeChanged_slot);
+
     ui->btnSelectPlayMode->setIconSize(QSize(32,32));
     ui->btnSelectPlayMode->setIcon(QIcon(":/icon/resources/icon/inOrder.png"));
     ui->btnSelectPlayMode->setToolTip(tr("顺序播放"));
