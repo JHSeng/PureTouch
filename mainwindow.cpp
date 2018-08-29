@@ -20,7 +20,7 @@
 #include <QSqlTableModel>
 #include <QFileDialog>
 #include <QDialog>
-#include <QSystemTrayIcon>]
+#include <QSystemTrayIcon>
 
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
@@ -199,11 +199,11 @@ MainWindow::MainWindow(QWidget *parent) :
     //end
 
     //数据库
-    model_1->setTable("HAHAHA");
+    model_1->setTable("localMusic");
     model_1->select();
-    model_2->setTable("I_LIKE_DATA");
+    model_2->setTable("myFavourite");
     model_2->select();
-    model_3->setTable("NIMA");
+    model_3->setTable("playlist");
     model_3->select();
 
     connect(mediaPlayer,&QMediaPlayer::metaDataAvailableChanged,this,&MainWindow::updatePlayState);
@@ -236,7 +236,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(songInfo,&QAction::triggered,this,&MainWindow::songInfo_slot);
     connect(playList_LocalMusic,&QMediaPlaylist::playbackModeChanged,this,&MainWindow::PlaylistModel_slot);
 
-    query.exec("select * from HAHAHA");
+    query.exec("select * from localMusic");
     while (query.next())
     {
         QString name=query.value(1).toString();
@@ -250,7 +250,7 @@ MainWindow::MainWindow(QWidget *parent) :
             playList_LocalMusic->addMedia(QUrl::fromLocalFile(fileName));
         }
     }
-    query.exec("select * from I_LIKE_DATA");
+    query.exec("select * from myFavourite");
     while (query.next())
     {
         QString name=query.value(1).toString();
@@ -264,7 +264,7 @@ MainWindow::MainWindow(QWidget *parent) :
             playList_MyFavourite->addMedia(QUrl::fromLocalFile(fileName));
         }
     }
-    query.exec("select * from NIMA");
+    query.exec("select * from playlist");
     while (query.next())
     {
         QString name=query.value(1).toString();
@@ -325,8 +325,8 @@ void MainWindow::updatePlayState()  //更新当前播放歌曲信息
     else
     {
         QSqlQuery query;
-        query.exec("select * from HAHAHA");
-        model_1->setTable("HAHAHA");
+        query.exec("select * from localMusic");
+        model_1->setTable("localMusic");
         model_1->select();
         int row=playList_LocalMusic->currentIndex();
         int flag=model_1->data(model_1->index(row,3)).toInt();
@@ -665,7 +665,7 @@ void MainWindow::songInfo_slot()
     {
         row=playList_LocalMusic->currentIndex();
 
-        model_1->setTable("HAHAHA");
+        model_1->setTable("localMusic");
         model_1->select();
         QString filePath=model_1->data(model_1->index(row,2)).toString();
         QMessageBox::about(this,tr("歌曲信息"),tr("歌曲名: %1  \n"
@@ -676,7 +676,7 @@ void MainWindow::songInfo_slot()
     else if (mediaPlayer->playlist()==playList_MyFavourite)
     {
         row=playList_MyFavourite->currentIndex();
-        model_2->setTable("I_LIKE_DATA");
+        model_2->setTable("myFavourite");
         model_2->select();
         QString filePath=model_2->data(model_2->index(row,2)).toString();
         QMessageBox::about(this,tr("歌曲信息"),tr("歌曲名: %1  \n"
@@ -687,7 +687,7 @@ void MainWindow::songInfo_slot()
     else
     {
         row=playList_PlayList->currentIndex();
-        model_3->setTable("NIMA");
+        model_3->setTable("playlist");
         model_3->select();
         QString filePath=model_3->data(model_3->index(row,2)).toString();
         QMessageBox::about(this,tr("歌曲信息"),tr("歌曲名: %1  \n"
@@ -703,8 +703,8 @@ void MainWindow::clearLocalMusic_slot()
     if (value==QMessageBox::Yes)
     {
         QSqlQuery query;
-        query.exec("select * from HAHAHA");
-        query.exec("delete from HAHAHA");
+        query.exec("select * from localMusic");
+        query.exec("delete from localMusic");
         ui->localMusicList->clear();
         playList_LocalMusic->clear();
     }
@@ -716,10 +716,10 @@ void MainWindow::clearMyFavourite_slot() //这个函数的数据库操作不是�
     if (value==QMessageBox::Yes)
     {
         QSqlQuery query;
-        query.exec("select * from I_LIKE_DATA");
-        query.exec("delete from I_LIKE_DATA");
-        query.exec("select * from HAHAHA");
-        query.prepare(QString("update HAHAHA set biaoji = ? where biaoji = 1"));
+        query.exec("select * from myFavourite");
+        query.exec("delete from myFavourite");
+        query.exec("select * from localMusic");
+        query.prepare(QString("update localMusic set biaoji = ? where biaoji = 1"));
         query.bindValue(0,0);
         query.exec();
         ui->myFavouriteList->clear();
@@ -733,8 +733,8 @@ void MainWindow::clearPlaylist_slot()
     if (value==QMessageBox::Yes)
     {
         QSqlQuery query;
-        query.exec("select * from NIMA");
-        query.exec("delete from NIMA");
+        query.exec("select * from playlist");
+        query.exec("delete from playlist");
         ui->playlistList->clear();
         playList_PlayList->clear();
     }
@@ -746,9 +746,9 @@ void MainWindow::clearAllList_slot()
     if (value==QMessageBox::Yes)
     {
         QSqlQuery query;
-        query.exec("delete from HAHAHA");
-        query.exec("delete from I_LIKE_DATA");
-        query.exec("delete from NIMA");
+        query.exec("delete from localMusic");
+        query.exec("delete from myFavourite");
+        query.exec("delete from playlist");
         ui->localMusicList->clear();
         ui->myFavouriteList->clear();
         ui->playlistList->clear();
@@ -763,7 +763,7 @@ void MainWindow::addToLocalMusic_slot()
     ui->playList->setCurrentIndex(0);
     setBtnLocalMusicLightUp();
     QSqlQuery query;
-    query.exec("select * from HAHAHA");
+    query.exec("select * from localMusic");
     QStringList list=QFileDialog::getOpenFileNames(this,tr("文件"),"D:/",tr("音频文件(*.mp3)"));
     if (!list.isEmpty())
     {
@@ -792,7 +792,7 @@ void MainWindow::addToLocalMusic_slot()
                 name.remove(QString(".mp3"));
                 item->setText(QString("%1").arg(name));
                 ui->localMusicList->addItem(item);
-                query.exec(QString("insert into HAHAHA values (%1,'%2','%3',%4)").arg(qrand()%10000).arg(name).arg(path).arg(0));
+                query.exec(QString("insert into localMusic values (%1,'%2','%3',%4)").arg(qrand()%10000).arg(name).arg(path).arg(0));
             }
         }
     }
@@ -803,7 +803,7 @@ void MainWindow::addToMyFavourite_slot()
     ui->playList->setCurrentIndex(1);
     setBtnMyFavouriteLightUp();
     QSqlQuery query;
-    query.exec("select * from I_LIKE_DATA");
+    query.exec("select * from myFavourite");
     QStringList list=QFileDialog::getOpenFileNames(this,tr("所有文件"),"D:/",tr("音频文件(*.mp3)"));
     if (!list.isEmpty())
     {
@@ -832,7 +832,7 @@ void MainWindow::addToMyFavourite_slot()
                 name.remove(QString(".mp3"));
                 item->setText(QString("%1").arg(name));
                 ui->myFavouriteList->addItem(item);
-                query.exec(QString("insert into I_LIKE_DATA values (%1,'%2','%3')").arg(qrand()%10000).arg(name).arg(path));
+                query.exec(QString("insert into myFavourite values (%1,'%2','%3')").arg(qrand()%10000).arg(name).arg(path));
             }
         }
     }
@@ -843,7 +843,7 @@ void MainWindow::addToPlaylist_slot()
     ui->playList->setCurrentIndex(2);
     setBtnPlaylistLightUp();
     QSqlQuery query;
-    query.exec("select * from NIMA");
+    query.exec("select * from playlist");
     QStringList list=QFileDialog::getOpenFileNames(this,tr("所有文件"),"D:/",tr("音频文件(*.mp3)"));
     if(!list.isEmpty())
     {
@@ -872,7 +872,7 @@ void MainWindow::addToPlaylist_slot()
                 name.remove(QString(".mp3"));
                 item->setText(QString("%1").arg(name));
                 ui->playlistList->addItem(item);
-                query.exec(QString("insert into NIMA values (%1,'%2','%3')").arg(qrand()%10000).arg(name).arg(path));
+                query.exec(QString("insert into playlist values (%1,'%2','%3')").arg(qrand()%10000).arg(name).arg(path));
             }
         }
     }
@@ -1086,7 +1086,7 @@ void MainWindow::Action1_slot()
 
 void MainWindow::Action2_slot()
 {
-    model_1->setTable("HAHAHA");
+    model_1->setTable("localMusic");
     model_1->select();
     int row=ui->localMusicList->currentIndex().row();
     int flag=model_1->data(model_1->index(row,3)).toInt();
@@ -1099,14 +1099,14 @@ void MainWindow::Action2_slot()
         ui->myFavouriteList->addItem(ITEMM);
         QSqlQuery query;
         playList_MyFavourite->addMedia(playList_LocalMusic->media(row));
-        model_1->setTable("HAHAHA");
+        model_1->setTable("localMusic");
         model_1->select();
         QString musicName=model_1->data(model_1->index(row,1)).toString();
         QString fileName=model_1->data(model_1->index(row,2)).toString();
         model_1->setData(model_1->index(row,3),1);
         model_1->submitAll();
-        query.exec("select * from I_LIKE_DATA");
-        query.exec(QString("insert into I_LIKE_DATA values (%1,'%2',%3)").arg(qrand()%10000).arg(musicName).arg(fileName));
+        query.exec("select * from myFavourite");
+        query.exec(QString("insert into myFavourite values (%1,'%2',%3)").arg(qrand()%10000).arg(musicName).arg(fileName));
         ui->playList->setCurrentIndex(1);
         setBtnMyFavouriteLightUp();
         if (mediaPlayer->playlist()==playList_LocalMusic)
@@ -1136,7 +1136,7 @@ void MainWindow::Action3_slot()
             playList_LocalMusic->setCurrentIndex(0);
             ui->localMusicList->takeItem(row);
             playList_LocalMusic->removeMedia(row,row);
-            model_1->setTable("HAHAHA");
+            model_1->setTable("localMusic");
             model_1->select();
             model_1->removeRow(row);
             model_1->submitAll();
@@ -1150,7 +1150,7 @@ void MainWindow::Action3_slot()
         {
             ui->localMusicList->takeItem(row);
             playList_LocalMusic->removeMedia(row,row);
-            model_1->setTable("HAHAHA");
+            model_1->setTable("localMusic");
             model_1->select();
             model_1->removeRow(row);
             model_1->submitAll();
@@ -1161,7 +1161,7 @@ void MainWindow::Action3_slot()
         int row=ui->localMusicList->currentIndex().row();
         ui->localMusicList->takeItem(row);
         playList_LocalMusic->removeMedia(row,row);
-        model_1->setTable("HAHAHA");
+        model_1->setTable("localMusic");
         model_1->select();
         model_1->removeRow(row);
         model_1->submitAll();
@@ -1176,14 +1176,14 @@ void MainWindow::Action4_slot()
     ITEMM->setIcon(QIcon(":/icon/resources/icon/addMusic.png"));
     ITEMM->setToolTip(QString("%1").arg(Text));
     ui->playlistList->addItem(ITEMM);
-    model_1->setTable("HAHAHA");
+    model_1->setTable("localMusic");
     model_1->select();
     playList_PlayList->addMedia(playList_LocalMusic->media(row));
     QSqlQuery query;
     QString musicName=model_1->data(model_1->index(row,1)).toString();
     QString fileName=model_1->data(model_1->index(row,2)).toString();
-    query.exec("select * from NIMA");
-    query.exec(QString("insert into NIMA values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
+    query.exec("select * from playlist");
+    query.exec(QString("insert into playlist values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
     ui->playList->setCurrentIndex(2);
     setBtnPlaylistLightUp();
 }
@@ -1194,7 +1194,7 @@ void MainWindow::Action5_slot()
     QString temp=ui->localMusicList->currentIndex().data().toString();
     QString musicName=temp.split(" - ").last();
     QString author=temp.remove(" - "+musicName);
-    model_1->setTable("HAHAHA");
+    model_1->setTable("localMusic");
     model_1->select();
     QString fileName=model_1->data(model_1->index(row,2)).toString();
     QString time;
@@ -1254,7 +1254,7 @@ void MainWindow::Action2_2_slot()
             playList_MyFavourite->setCurrentIndex(0);
             ui->myFavouriteList->takeItem(row);
             playList_MyFavourite->removeMedia(row,row);
-            model_2->setTable("I_LIKE_DATA");
+            model_2->setTable("myFavourite");
             model_2->select();
             model_2->removeRow(row);
             model_2->submitAll();
@@ -1268,7 +1268,7 @@ void MainWindow::Action2_2_slot()
         {
             ui->myFavouriteList->takeItem(row);
             playList_MyFavourite->removeMedia(row,row);
-            model_2->setTable("I_LIKE_DATA");
+            model_2->setTable("myFavourite");
             model_2->select();
             model_2->removeRow(row);
             model_2->submitAll();
@@ -1279,14 +1279,14 @@ void MainWindow::Action2_2_slot()
         int row=ui->myFavouriteList->currentIndex().row();
         ui->myFavouriteList->takeItem(row);
         playList_MyFavourite->removeMedia(row,row);
-        model_2->setTable("I_LIKE_DATA");
+        model_2->setTable("myFavourite");
         model_2->select();
         model_2->removeRow(row);
         model_2->submitAll();
     }
     QSqlQuery query;
-    query.exec("select * from HAHAHA");
-    query.prepare(QString("update HAHAHA set biaoji = ? where MusicName = '%1' ").arg(musicName));
+    query.exec("select * from localMusic");
+    query.prepare(QString("update localMusic set biaoji = ? where MusicName = '%1' ").arg(musicName));
     query.bindValue(0,0);
     query.exec();
 }
@@ -1299,14 +1299,14 @@ void MainWindow::Action3_2_slot()
     ITEMM->setIcon(QIcon(":/icon/resources/icon/addMusic.png"));
     ITEMM->setText(QString("%1").arg(Text));
     ui->playlistList->addItem(ITEMM);
-    model_2->setTable("I_LIKE_DATA");
+    model_2->setTable("myFavourite");
     model_2->select();
     playList_PlayList->addMedia(playList_MyFavourite->media(row));
     QSqlQuery query;
     QString musicName=model_2->data(model_2->index(row,1)).toString();
     QString fileName=model_2->data(model_2->index(row,2)).toString();
-    query.exec("select * from NIMA");
-    query.exec(QString("insert into NIMA values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
+    query.exec("select * from playlist");
+    query.exec(QString("insert into playlist values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
     ui->playList->setCurrentIndex(2);
     setBtnPlaylistLightUp();
 }
@@ -1317,7 +1317,7 @@ void MainWindow::Action4_2_slot()
     QString temp=ui->myFavouriteList->currentIndex().data().toString();
     QString musicName=temp.split(" - ").last();
     QString author=temp.remove(" - "+musicName);
-    model_2->setTable("I_LIKE_DATA");
+    model_2->setTable("myFavourite");
     model_2->select();
     QString fileName=model_2->data(model_2->index(row,2)).toString();
     QString time;
@@ -1375,7 +1375,7 @@ void MainWindow::Action2_3_slot()
             playList_PlayList->setCurrentIndex(0);
             ui->playlistList->takeItem(row);
             playList_PlayList->removeMedia(row,row);
-            model_3->setTable("NIMA");
+            model_3->setTable("playlist");
             model_3->select();
             model_3->removeRow(row);
             model_3->submitAll();
@@ -1389,7 +1389,7 @@ void MainWindow::Action2_3_slot()
         {
             ui->playlistList->takeItem(row);
             playList_PlayList->removeMedia(row,row);
-            model_3->setTable("NIMA");
+            model_3->setTable("playlist");
             model_3->select();
             model_3->removeRow(row);
             model_3->submitAll();
@@ -1400,7 +1400,7 @@ void MainWindow::Action2_3_slot()
         int row=ui->playlistList->currentIndex().row();
         ui->playlistList->takeItem(row);
         playList_PlayList->removeMedia(row,row);
-        model_3->setTable("NIMA");
+        model_3->setTable("playlist");
         model_3->select();
         model_3->removeRow(row);
         model_3->submitAll();
@@ -1413,7 +1413,7 @@ void MainWindow::Action3_3_slot()
     QString temp=ui->playlistList->currentIndex().data().toString();
     QString musicName=temp.split(" - ").last();
     QString author=temp.remove(" - "+musicName);
-    model_3->setTable("NIMA");
+    model_3->setTable("playlist");
     model_3->select();
     QString fileName=model_3->data(model_3->index(row,2)).toString();
     QString time;
@@ -1462,7 +1462,7 @@ void MainWindow::Action_slot()
 
 void MainWindow::Action_1_slot()
 {
-    model_1->setTable("HAHAHA");
+    model_1->setTable("localMusic");
     model_1->select();
     int row=ui->searchList->currentIndex().row();
     int flag=model_1->data(model_1->index(load[row],3)).toInt();
@@ -1475,14 +1475,14 @@ void MainWindow::Action_1_slot()
         ui->myFavouriteList->addItem(itemm);
         QSqlQuery query;
         playList_MyFavourite->addMedia(playList_LocalMusic->media(load[row]));
-        model_1->setTable("HAHAHA");
+        model_1->setTable("localMusic");
         model_1->select();
         QString musicName=model_1->data(model_1->index(load[row],1)).toString();
         QString fileName=model_1->data(model_1->index(load[row],2)).toString();
         model_1->setData(model_1->index(load[row],3),1);
         model_1->submitAll();
-        query.exec("select * from I_LIKE_DATA");
-        query.exec(QString("insert into I_LIKE_DATA values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
+        query.exec("select * from myFavourite");
+        query.exec(QString("insert into myFavourite values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
         ui->playList->setCurrentIndex(1);
         setBtnMyFavouriteLightUp();
         if (mediaPlayer->playlist()==playList_LocalMusic)
@@ -1505,14 +1505,14 @@ void MainWindow::Action_2_slot()
     QListWidgetItem *itemm=new QListWidgetItem;
     itemm->setIcon(QIcon(":/icon/resources/icon/addMusic.png"));
     itemm->setText(QString("%1").arg(Text));
-    model_1->setTable("HAHAHA");
+    model_1->setTable("localMusic");
     model_1->select();
     playList_PlayList->addMedia(playList_LocalMusic->media(load[row]));
     QSqlQuery query;
     QString musicName=model_1->data(model_1->index(load[row],1)).toString();
     QString fileName=model_1->data(model_1->index(load[row],2)).toString();
-    query.exec("select * from NIMA");
-    query.exec(QString("insert into NIMA values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
+    query.exec("select * from playlist");
+    query.exec(QString("insert into playlist values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
     ui->playList->setCurrentIndex(2);
     setBtnPlaylistLightUp();
 }
@@ -1532,7 +1532,7 @@ void MainWindow::Action_3_slot()
             ui->localMusicList->takeItem(load[row]);
             ui->searchList->takeItem(row);
             playList_LocalMusic->removeMedia(load[row],load[row]);
-            model_1->setTable("HAHAHA");
+            model_1->setTable("localMusic");
             model_1->select();
             model_1->removeRow(load[row]);
             model_1->submitAll();
@@ -1547,7 +1547,7 @@ void MainWindow::Action_3_slot()
             ui->searchList->takeItem(row);
             ui->localMusicList->takeItem(load[row]);
             playList_LocalMusic->removeMedia(load[row],load[row]);
-            model_1->setTable("HAHAHA");
+            model_1->setTable("localMusic");
             model_1->select();
             model_1->removeRow(load[row]);
             model_1->submitAll();
@@ -1559,7 +1559,7 @@ void MainWindow::Action_3_slot()
         ui->searchList->takeItem(row);
         ui->localMusicList->takeItem(load[row]);
         playList_LocalMusic->removeMedia(load[row],load[row]);
-        model_1->setTable("HAHAHA");
+        model_1->setTable("localMusic");
         model_1->select();
         model_1->removeRow(load[row]);
         model_1->submitAll();
@@ -1572,7 +1572,7 @@ void MainWindow::Action_4_slot()
     QString temp=ui->searchList->currentIndex().data().toString();
     QString musicName=temp.split(" - ").last();
     QString author=temp.remove(" - "+musicName);
-    model_1->setTable("HAHAHA");
+    model_1->setTable("localMusic");
     model_1->select();
     QString fileName=model_1->data(model_1->index(load[row],2)).toString();
     QString time;
@@ -1956,7 +1956,7 @@ void MainWindow::on_btnAddToCurrentList_clicked()
     if (mediaPlayer->playlist()==playList_LocalMusic)
     {
         int row=playList_LocalMusic->currentIndex();
-        model_1->setTable("HAHAHA");
+        model_1->setTable("localMusic");
         model_1->select();
         int flag=model_1->data(model_1->index(row,3)).toInt();
         if (flag==0)
@@ -1971,14 +1971,14 @@ void MainWindow::on_btnAddToCurrentList_clicked()
             ui->myFavouriteList->addItem(ITEM);
             playList_MyFavourite->addMedia(playList_LocalMusic->media(row));
             QSqlQuery query;
-            model_1->setTable("HAHAHA");
+            model_1->setTable("localMusic");
             model_1->select();
             QString musicName=model_1->data(model_1->index(row,1)).toString();
             QString fileName=model_1->data(model_1->index(row,2)).toString();
             model_1->setData(model_1->index(row,3),1);
             model_1->submitAll();
-            query.exec("select * from I_LIKE_DATA");
-            query.exec(QString("insert into I_LIKE_DATA values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
+            query.exec("select * from myFavourite");
+            query.exec(QString("insert into myFavourite values (%1,'%2','%3')").arg(qrand()%10000).arg(musicName).arg(fileName));
         }
     }
     else return;

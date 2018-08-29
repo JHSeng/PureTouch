@@ -18,9 +18,12 @@ static bool CreateConnection()
         return 1;
     }
     QSqlQuery query(db);
-    query.exec(QString("create table HAHAHA (id int primary key,MusicName varchar,FileName varchar,biaoji int)"));
-    query.exec(QString("create table I_LIKE_DATA (id int primary key,MusicName varchar,FileName varchar)"));
-    query.exec(QString("create table NIMA (id int primary key,MusicName varchar,FileName varchar)"));
+    //HAHAHA localMusic
+    //I_LIKE_DATA myFavourite
+    //NIMA playlist
+    query.exec(QString("create table localMusic (id int primary key,MusicName varchar,FileName varchar,biaoji int)"));
+    query.exec(QString("create table myFavourite (id int primary key,MusicName varchar,FileName varchar)"));
+    query.exec(QString("create table playlist (id int primary key,MusicName varchar,FileName varchar)"));
     query.exec(QString("create table WALLPAPER_DATA (FileName varchar primary key)"));
     query.exec(QString("create table TRA_DATA (TRA double primary key)"));
     query.exec(QString("create table Bizi_DATA (FileName varchar primary key)"));
